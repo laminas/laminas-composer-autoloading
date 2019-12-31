@@ -1,18 +1,20 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-composer-autoloading for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-composer-autoloading/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\ComposerAutoloading\Command;
+namespace LaminasTest\ComposerAutoloading\Command;
 
+use Laminas\ComposerAutoloading\Command;
+use Laminas\ComposerAutoloading\Exception;
+use LaminasTest\ComposerAutoloading\ProjectSetupTrait;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use ZF\ComposerAutoloading\Command;
-use ZF\ComposerAutoloading\Exception;
-use ZFTest\ComposerAutoloading\ProjectSetupTrait;
 
 class AbstractCommandTest extends TestCase
 {
