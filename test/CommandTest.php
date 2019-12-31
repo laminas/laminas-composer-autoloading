@@ -1,11 +1,16 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-composer-autoloading for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-composer-autoloading/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\ComposerAutoloading;
+namespace LaminasTest\ComposerAutoloading;
 
+use Laminas\ComposerAutoloading\Command;
+use Laminas\ComposerAutoloading\Exception;
+use Laminas\Stdlib\ConsoleHelper;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use org\bovigo\vfs\vfsStream;
@@ -14,16 +19,13 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
-use Zend\Stdlib\ConsoleHelper;
-use ZF\ComposerAutoloading\Command;
-use ZF\ComposerAutoloading\Exception;
 
 class CommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
     use ProjectSetupTrait;
 
-    const TEST_COMMAND_NAME = 'zf-composer-autoloading';
+    const TEST_COMMAND_NAME = 'laminas-composer-autoloading';
 
     /** @var vfsStreamDirectory */
     private $dir;
@@ -532,7 +534,7 @@ class CommandTest extends TestCase
 
     private function assertComposerBinaryNotExecutable()
     {
-        $exec = $this->getFunctionMock('ZF\ComposerAutoloading', 'exec');
+        $exec = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
         $exec->expects($this->once())->willReturnCallback(function ($command, &$output, &$retValue) {
             $this->assertEquals('composer 2>&1', $command);
             $retValue = 1;
@@ -541,7 +543,7 @@ class CommandTest extends TestCase
 
     private function assertComposerBinaryExecutable()
     {
-        $exec = $this->getFunctionMock('ZF\ComposerAutoloading', 'exec');
+        $exec = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
         $exec->expects($this->once())->willReturnCallback(function ($command, &$output, &$retValue) {
             $this->assertEquals('composer 2>&1', $command);
             $retValue = 0;
