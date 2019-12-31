@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#2](https://github.com/zfcampus/zf-composer-autoloading/pull/2) adds the
+- [zfcampus/zf-composer-autoloading#2](https://github.com/zfcampus/zf-composer-autoloading/pull/2) adds the
   flags `-p`/`--modules-path`, allowing the user to specify the directory
   holding the module/source tree for which autoloading will be provided.
 

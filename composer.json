@@ -1,32 +1,39 @@
 {
-    "name": "zfcampus/zf-composer-autoloading",
-    "description": "Sets up Composer-based autoloading for your Zend Framework modules",
-    "type": "library",
+    "name": "laminas/laminas-composer-autoloading",
+    "description": "Sets up Composer-based autoloading for your Laminas modules",
     "license": "BSD-3-Clause",
     "keywords": [
+        "laminas",
         "autoloading",
         "console",
-        "framework",
-        "zendframework",
-        "zf2"
+        "framework"
     ],
-    "homepage": "http://apigility.org/",
+    "homepage": "https://laminas.dev",
     "support": {
-        "irc": "irc://irc.freenode.net/apigility",
-        "source": "https://github.com/zfcampus/zf-composer-autoloading",
-        "issues": "https://github.com/zfcampus/zf-composer-autoloading/issues"
+        "docs": "https://docs.laminas.dev/laminas-composer-autoloading/",
+        "issues": "https://github.com/laminas/laminas-composer-autoloading/issues",
+        "source": "https://github.com/laminas/laminas-composer-autoloading",
+        "rss": "https://github.com/laminas/laminas-composer-autoloading/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
+    },
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
     },
+    "require": {
+        "laminas/laminas-zendframework-bridge": "^1.0"
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.6.2"
     },
     "autoload": {
         "psr-4": {
-            "ZF\\ComposerAutoloading\\": "src/"
+            "Laminas\\ComposerAutoloading\\": "src/"
         }
     },
     "bin": [
@@ -35,5 +42,8 @@
     "scripts": {
         "cs-check": "phpcs",
         "cs-fix": "phpcbf"
+    },
+    "replace": {
+        "zfcampus/zf-composer-autoloading": "self.version"
     }
 }
