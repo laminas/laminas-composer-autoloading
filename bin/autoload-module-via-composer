@@ -1,17 +1,13 @@
 #!/usr/bin/env php
 <?php
+
 /**
- * Setup composer-based autoloading for a Zend Framework module.
- *
- * Usage:
- *
- *     autoload-module-via-composer [help|--help|-h] [--composer|-c <composer path>] [--type|-t <psr0|psr4>] modulename
- *
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-composer-autoloading for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-composer-autoloading/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\ComposerAutoloading;
+namespace Laminas\ComposerAutoloading;
 
 // Setup/verify autoloading
 if (file_exists($a = __DIR__ . '/../../../autoload.php')) {

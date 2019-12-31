@@ -1,12 +1,12 @@
-zf-composer-autoloading
+laminas-composer-autoloading
 =======================
 
-[![Build Status](https://travis-ci.org/zfcampus/zf-composer-autoloading.png)](https://travis-ci.org/zfcampus/zf-composer-autoloading)
+[![Build Status](https://travis-ci.org/laminas/laminas-composer-autoloading.png)](https://travis-ci.org/laminas/laminas-composer-autoloading)
 
 Introduction
 ------------
 
-The `zf-composer-autoloading` package provides a single vendor binary,
+The `laminas-composer-autoloading` package provides a single vendor binary,
 `autoload-module-via-composer`, which will:
 
 - Add the named module to the project autoloading rules defined in
@@ -19,7 +19,7 @@ Installation
 Run the following `composer` command:
 
 ```console
-$ composer require --dev "zfcampus/zf-composer-autoloading"
+$ composer require --dev "laminas/laminas-composer-autoloading"
 ```
 
 Usage
