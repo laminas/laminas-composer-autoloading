@@ -18,16 +18,16 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#5](https://github.com/zfcampus/zf-composer-autoloading/pull/5) fixes how
+- [zfcampus/zf-composer-autoloading#5](https://github.com/zfcampus/zf-composer-autoloading/pull/5) fixes how
   the command creates the path to the module source directory; previously, it
   was hard-coded, and did not take into account the `-p`/`--modules-path`
-  argument created in [#2](https://github.com/zfcampus/zf-composer-autoloading/pull/2).
+  argument created in [zfcampus/zf-composer-autoloading#2](https://github.com/zfcampus/zf-composer-autoloading/pull/2).
 
-- [#6](https://github.com/zfcampus/zf-composer-autoloading/pull/6) adds
+- [zfcampus/zf-composer-autoloading#6](https://github.com/zfcampus/zf-composer-autoloading/pull/6) adds
   validation for the number of arguments, ensuring that no flags have empty
   values.
 
-- [#7](https://github.com/zfcampus/zf-composer-autoloading/pull/7) adds
+- [zfcampus/zf-composer-autoloading#7](https://github.com/zfcampus/zf-composer-autoloading/pull/7) adds
   validation of the composer binary in a cross-platform way; an exception is
   now raised if it is not executable.
 
@@ -35,7 +35,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#2](https://github.com/zfcampus/zf-composer-autoloading/pull/2) adds the
+- [zfcampus/zf-composer-autoloading#2](https://github.com/zfcampus/zf-composer-autoloading/pull/2) adds the
   flags `-p`/`--modules-path`, allowing the user to specify the directory
   holding the module/source tree for which autoloading will be provided.
 
