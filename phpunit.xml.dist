@@ -4,7 +4,7 @@
          bootstrap="vendor/autoload.php"
          colors="true">
     <testsuites>
-        <testsuite name="zf-composer-autoloading">
+        <testsuite name="laminas-composer-autoloading">
             <directory>./test</directory>
         </testsuite>
     </testsuites>

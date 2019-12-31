@@ -1,15 +1,17 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-composer-autoloading for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-composer-autoloading/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\ComposerAutoloading;
+namespace LaminasTest\ComposerAutoloading;
 
+use Laminas\ComposerAutoloading\Help;
+use Laminas\Stdlib\ConsoleHelper;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Zend\Stdlib\ConsoleHelper;
-use ZF\ComposerAutoloading\Help;
 
 class HelpTest extends TestCase
 {
@@ -21,7 +23,7 @@ class HelpTest extends TestCase
         $console
             ->writeLine(
                 Argument::that(function ($message) {
-                    return false !== strpos($message, 'zf-composer-autoloading');
+                    return false !== strpos($message, 'laminas-composer-autoloading');
                 }),
                 true,
                 $resource
@@ -29,7 +31,7 @@ class HelpTest extends TestCase
             ->shouldBeCalled();
 
         $command = new Help(
-            'zf-composer-autoloading',
+            'laminas-composer-autoloading',
             $console->reveal()
         );
 

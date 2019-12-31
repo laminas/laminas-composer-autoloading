@@ -1,14 +1,14 @@
-zf-composer-autoloading
+laminas-composer-autoloading
 =======================
 
-[![Build Status](https://travis-ci.org/zfcampus/zf-composer-autoloading.svg?branch=master)](https://travis-ci.org/zfcampus/zf-composer-autoloading)
-[![Coverage Status](https://coveralls.io/repos/github/zfcampus/zf-composer-autoloading/badge.svg?branch=master)](https://coveralls.io/github/zfcampus/zf-composer-autoloading?branch=master)
+[![Build Status](https://travis-ci.org/laminas/laminas-composer-autoloading.svg?branch=master)](https://travis-ci.org/laminas/laminas-composer-autoloading)
+[![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-composer-autoloading/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-composer-autoloading?branch=master)
 
 Introduction
 ------------
 
-The `zf-composer-autoloading` package provides a single vendor binary,
-`zf-composer-autoloading`, which provides following commands:
+The `laminas-composer-autoloading` package provides a single vendor binary,
+`laminas-composer-autoloading`, which provides following commands:
 
 - `enable` - add the named module to the project autoloading rules
   defined in `composer.json`, and
@@ -21,7 +21,7 @@ Both commands also dump the autoloading rules on completion.
 >
 > If you were using the v1 series of this component, the script previously
 > exposed was `autoload-module-via-composer`. That script is now renamed
-> to `zf-composer-autoloading`.
+> to `laminas-composer-autoloading`.
 
 Installation
 ------------
@@ -29,7 +29,7 @@ Installation
 Run the following `composer` command:
 
 ```console
-$ composer require --dev "zfcampus/zf-composer-autoloading"
+$ composer require --dev "laminas/laminas-composer-autoloading"
 ```
 
 Note the `--dev` flag; this tool is intended for use in development only.
@@ -38,7 +38,7 @@ Usage
 -----
 
 ```bash
-$ ./vendor/bin/zf-composer-autoloading \
+$ ./vendor/bin/laminas-composer-autoloading \
 > enable|disable \
 > [help|--help|-h] \
 > [--composer|-c <composer path>] \
@@ -72,7 +72,7 @@ $ ./vendor/bin/zf-composer-autoloading \
 - If unable to determine the autoloading type, PSR-0 will be assumed.
 - On enabling autoloading, if the `Module` class file for the module
   is in the module root, it will be moved to the module's `src/` directory
-  (zend-mvc applications only).
+  (laminas-mvc applications only).
 
 Examples
 --------
@@ -81,40 +81,40 @@ Examples
    entry for "Status" module.
 
    ```bash
-   $ ./vendor/bin/zf-composer-autoloading enable Status
+   $ ./vendor/bin/laminas-composer-autoloading enable Status
    ```
    
 1. Autodetect a module's autoloading type, and remove a Composer autoloading
    entry for "Status" module.
    
    ```bash
-   $ ./vendor/bin/zf-composer-autoloading disable Status
+   $ ./vendor/bin/laminas-composer-autoloading disable Status
    ```
 
 1. Specify PSR-0 for the module type, and generate a Composer autoloading
    entry for "Status" module.
 
    ```bash
-   $ ./vendor/bin/zf-composer-autoloading enable --type psr0 Status
+   $ ./vendor/bin/laminas-composer-autoloading enable --type psr0 Status
    ```
 
 1. Specify PSR-4 for the module type, and generate a Composer autoloading
    entry for "Status" module.
 
    ```bash
-   $ ./vendor/bin/zf-composer-autoloading enable --type psr4 Status
+   $ ./vendor/bin/laminas-composer-autoloading enable --type psr4 Status
    ```
 
 1. Specify the path to the composer binary when generating autoloading entry
    for "Status" module:
 
    ```bash
-   $ ./vendor/bin/zf-composer-autoloading enable -c composer.phar Status
+   $ ./vendor/bin/laminas-composer-autoloading enable -c composer.phar Status
    ```
 
 1. Specify the path to modules directory, and generate a Composer autoloading
    entry for "Status" module.
 
    ```bash
-   $ ./vendor/bin/zf-composer-autoloading enable -p src Status
+   $ ./vendor/bin/laminas-composer-autoloading enable -p src Status
    ```
