@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-composer-autoloading for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-composer-autoloading/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZF\ComposerAutoloading;
+namespace Laminas\ComposerAutoloading;
 
-use Zend\Stdlib\ConsoleHelper;
+use Laminas\Stdlib\ConsoleHelper;
 
 class Help
 {
@@ -66,7 +68,7 @@ EOT;
         // Find relative command path
         $command = strtr(realpath($this->command) ?: $this->command, [
             getcwd() . DIRECTORY_SEPARATOR => '',
-            'zfcampus' . DIRECTORY_SEPARATOR . 'zf-composer-autoloading' . DIRECTORY_SEPARATOR => '',
+            'laminascampus' . DIRECTORY_SEPARATOR . 'laminas-composer-autoloading' . DIRECTORY_SEPARATOR => '',
         ]);
 
         $this->helper->writeLine(sprintf(

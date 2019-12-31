@@ -1,16 +1,18 @@
 <?php
+
 /**
- * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/laminas/laminas-composer-autoloading for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-composer-autoloading/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZFTest\ComposerAutoloading;
+namespace LaminasTest\ComposerAutoloading;
 
+use Laminas\ComposerAutoloading\Command;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamContainer;
 use org\bovigo\vfs\vfsStreamFile;
 use phpmock\phpunit\PHPMock;
-use ZF\ComposerAutoloading\Command;
 
 trait ProjectSetupTrait
 {
@@ -78,7 +80,7 @@ EOM;
      */
     private function assertComposerDumpAutoload()
     {
-        $system = $this->getFunctionMock('ZF\ComposerAutoloading\Command', 'system');
+        $system = $this->getFunctionMock('Laminas\ComposerAutoloading\Command', 'system');
         $system->expects($this->once())->willReturnCallback(function ($command) {
             $this->assertEquals($this->composer . ' dump-autoload', $command);
         });
@@ -89,7 +91,7 @@ EOM;
      */
     private function assertNotComposerDumpAutoload()
     {
-        $system = $this->getFunctionMock('ZF\ComposerAutoloading\Command', 'system');
+        $system = $this->getFunctionMock('Laminas\ComposerAutoloading\Command', 'system');
         $system->expects($this->never());
     }
 }
