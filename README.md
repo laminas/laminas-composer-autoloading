@@ -1,7 +1,7 @@
 laminas-composer-autoloading
 =======================
 
-[![Build Status](https://travis-ci.org/laminas/laminas-composer-autoloading.svg?branch=master)](https://travis-ci.org/laminas/laminas-composer-autoloading)
+[![Build Status](https://travis-ci.com/laminas/laminas-composer-autoloading.svg?branch=master)](https://travis-ci.com/laminas/laminas-composer-autoloading)
 [![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-composer-autoloading/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-composer-autoloading?branch=master)
 
 Introduction
