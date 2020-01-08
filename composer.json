@@ -10,7 +10,6 @@
     ],
     "homepage": "https://laminas.dev",
     "support": {
-        "docs": "https://docs.laminas.dev/laminas-composer-autoloading/",
         "issues": "https://github.com/laminas/laminas-composer-autoloading/issues",
         "source": "https://github.com/laminas/laminas-composer-autoloading",
         "rss": "https://github.com/laminas/laminas-composer-autoloading/releases.atom",
