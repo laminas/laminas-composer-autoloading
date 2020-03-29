@@ -61,6 +61,6 @@
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "replace": {
-        "zfcampus/zf-composer-autoloading": "self.version"
+        "zfcampus/zf-composer-autoloading": "^2.1.0"
     }
 }
