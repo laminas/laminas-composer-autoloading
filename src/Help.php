@@ -68,7 +68,7 @@ EOT;
         // Find relative command path
         $command = strtr(realpath($this->command) ?: $this->command, [
             getcwd() . DIRECTORY_SEPARATOR => '',
-            'laminascampus' . DIRECTORY_SEPARATOR . 'laminas-composer-autoloading' . DIRECTORY_SEPARATOR => '',
+            'laminas' . DIRECTORY_SEPARATOR . 'laminas-composer-autoloading' . DIRECTORY_SEPARATOR => '',
         ]);
 
         $this->helper->writeLine(sprintf(
