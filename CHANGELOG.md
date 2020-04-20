@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.1.1 - TBD
+## 2.1.1 - 2020-04-20
 
 ### Added
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#1](https://github.com/laminas/laminas-composer-autoloading/pull/1) fixes an incorrect relative path when emitting help information, due to a malformed migration string.
 
 ## 2.1.0 - 2018-05-03
 
