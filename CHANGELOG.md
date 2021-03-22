@@ -2,27 +2,34 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.2.0 - TBD
+## 2.2.0 - 2021-03-22
+
+
+-----
+
+### Release Notes for [2.2.0](https://github.com/laminas/laminas-composer-autoloading/milestone/2)
 
 ### Added
 
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
+- This release adds support for PHP 8.0.
 
 ### Removed
 
-- Nothing.
+- This release removes support for PHP versions prior to 7.3.
 
-### Fixed
+### 2.2.0
 
-- Nothing.
+- Total issues resolved: **1**
+- Total pull requests resolved: **4**
+- Total contributors: **2**
+
+#### Enhancement
+
+ - [8: Update to laminas-coding-standard v2](https://github.com/laminas/laminas-composer-autoloading/pull/8) thanks to @weierophinney
+ - [7: Add Psalm integration](https://github.com/laminas/laminas-composer-autoloading/pull/7) thanks to @weierophinney
+ - [6: Update to support PHP 8.0](https://github.com/laminas/laminas-composer-autoloading/pull/6) thanks to @weierophinney
+ - [5: Switch from Travis to Laminas CI worfklow on GHA](https://github.com/laminas/laminas-composer-autoloading/pull/5) thanks to @weierophinney
+ - [3: PHP 8.0 support](https://github.com/laminas/laminas-composer-autoloading/issues/3) thanks to @boesing
 
 ## 2.1.1 - 2020-04-20
 
