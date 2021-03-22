@@ -1,8 +1,7 @@
 laminas-composer-autoloading
 =======================
 
-[![Build Status](https://travis-ci.com/laminas/laminas-composer-autoloading.svg?branch=master)](https://travis-ci.com/laminas/laminas-composer-autoloading)
-[![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-composer-autoloading/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-composer-autoloading?branch=master)
+[![Build Status](https://github.com/laminas/laminas-composer-autoloading/workflows/Continuous%20Integration/badge.svg)](https://github.com/laminas/laminas-composer-autoloading/actions?query=workflow%3A"Continuous+Integration")
 
 Introduction
 ------------
@@ -83,10 +82,10 @@ Examples
    ```bash
    $ ./vendor/bin/laminas-composer-autoloading enable Status
    ```
-   
+
 1. Autodetect a module's autoloading type, and remove a Composer autoloading
    entry for "Status" module.
-   
+
    ```bash
    $ ./vendor/bin/laminas-composer-autoloading disable Status
    ```
