@@ -32,15 +32,21 @@ class Command
      */
     private $helpArgs = ['--help', '-h', 'help'];
 
+    /** @var string */
+    private $command;
+
     /**
      * @var string Composer binary name/location
      */
     private $composer = 'composer';
 
+    /** @var ConsoleHelper */
+    private $console;
+
     /**
      * @var string One of psr-0 or psr-4
      */
-    private $type;
+    private $type = '';
 
     /**
      * @var string Filesystem path to modules directory
@@ -50,12 +56,12 @@ class Command
     /**
      * @var string Module name
      */
-    private $module;
+    private $module = '';
 
     /**
      * @var string Filesystem path to module
      */
-    private $modulePath;
+    private $modulePath = '';
 
     /**
      * @param string $command

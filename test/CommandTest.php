@@ -146,7 +146,7 @@ class CommandTest extends TestCase
     {
         $this->assertAttributeSame('module', 'modulesPath', $this->command);
         $this->assertAttributeSame('composer', 'composer', $this->command);
-        $this->assertAttributeSame(null, 'type', $this->command);
+        $this->assertAttributeSame('', 'type', $this->command);
     }
 
     public function testUnknownCommandEmitsHelpToStderrWithErrorMessage(): void
@@ -569,18 +569,30 @@ class CommandTest extends TestCase
     private function assertComposerBinaryNotExecutable(): void
     {
         $exec   = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
-        $exec->expects($this->once())->willReturnCallback(function ($command, &$output, &$retValue) {
-            $this->assertEquals('composer 2>&1', $command);
-            $retValue = 1;
-        });
+        $exec->expects($this->once())->willReturnCallback(
+            /**
+             * @param null|string[] $output
+             * @param null|int $retValue
+             */
+            function (string $command, &$output, &$retValue): void {
+                $this->assertEquals('composer 2>&1', $command);
+                $retValue = 1;
+            }
+        );
     }
 
     private function assertComposerBinaryExecutable(): void
     {
         $exec = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
-        $exec->expects($this->once())->willReturnCallback(function ($command, &$output, &$retValue) {
-            $this->assertEquals('composer 2>&1', $command);
-            $retValue = 0;
-        });
+        $exec->expects($this->once())->willReturnCallback(
+            /**
+             * @param null|string[] $output
+             * @param null|int $retValue
+             */
+            function (string $command, &$output, &$retValue): void {
+                $this->assertEquals('composer 2>&1', $command);
+                $retValue = 0;
+            }
+        );
     }
 }

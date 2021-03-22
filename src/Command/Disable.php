@@ -17,7 +17,7 @@ class Disable extends AbstractCommand
      *
      * {@inheritdoc}
      *
-     * @return array|false
+     * @return false|array{autoload: array<string, array<string, string>|mixed>|mixed}
      */
     protected function execute()
     {
