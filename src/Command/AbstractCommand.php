@@ -20,7 +20,12 @@ abstract class AbstractCommand
     /**
      * @var string
      */
-    protected $modulePath;
+    protected $modulePath = '';
+
+    /**
+     * @var string
+     */
+    protected $modulesPath;
 
     /**
      * @var string
@@ -30,22 +35,23 @@ abstract class AbstractCommand
     /**
      * @var string
      */
-    protected $composerJsonFile;
+    protected $composerJsonFile = '';
 
     /**
      * @var array
+     * @psalm-var array{autoload: array<string, array<string, string>|mixed>|mixed}
      */
-    protected $composerPackage;
+    protected $composerPackage = [];
 
     /**
      * @var string
      */
-    protected $moduleName;
+    protected $moduleName = '';
 
     /**
      * @var string
      */
-    protected $type;
+    protected $type = '';
 
     /**
      * @param string $projectDir
@@ -85,7 +91,8 @@ abstract class AbstractCommand
     /**
      * Validate that the composer.json exists, is writable, and contains valid contents.
      *
-     * @return string
+     * @return array{autoload: array<string, array<string, string>|mixed>|mixed}
+     *
      * @throws Exception\RuntimeException
      */
     public function getComposerJson()
@@ -160,10 +167,9 @@ abstract class AbstractCommand
     }
 
     /**
-     * @param string $content
      * @return void
      */
-    protected function writeJsonFileAndDumpAutoloader($content)
+    protected function writeJsonFileAndDumpAutoloader(array $content)
     {
         file_put_contents($this->composerJsonFile, json_encode(
             $content,
@@ -175,7 +181,7 @@ abstract class AbstractCommand
     }
 
     /**
-     * @return false|string
+     * @return false|array{autoload: array<string, array<string, string>|mixed>|mixed}
      */
     abstract protected function execute();
 }

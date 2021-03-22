@@ -60,8 +60,10 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testThrowsExceptionWhenComposerJsonDoesNotExist(string $type)
+    public function testThrowsExceptionWhenComposerJsonDoesNotExist(string $type): void
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -73,8 +75,10 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testThrowsExceptionWhenComposerJsonIsNotWritable(string $type)
+    public function testThrowsExceptionWhenComposerJsonIsNotWritable(string $type): void
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -87,8 +91,10 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testThrowsExceptionWhenComposerJsonHasInvalidContent(string $type)
+    public function testThrowsExceptionWhenComposerJsonHasInvalidContent(string $type): void
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -103,8 +109,10 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testThrowsExceptionWhenComposerJsonHasNoContent(string $type)
+    public function testThrowsExceptionWhenComposerJsonHasNoContent(string $type): void
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -115,7 +123,7 @@ class AbstractCommandTest extends TestCase
         $this->command->process('App', $type);
     }
 
-    public function testThrowsExceptionWhenCannotDetermineModuleType()
+    public function testThrowsExceptionWhenCannotDetermineModuleType(): void
     {
         $this->command->expects($this->never())->method('execute');
         vfsStream::newDirectory('App')->at($this->modulesDir);
@@ -128,10 +136,12 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
+     *
+     * @return void
      */
     public function testComposerJsonContentIsNotChangedAndDumpAutoloadIsNotCalledWhenExecuteMethodReturnsFalse(
         string $type
-    ) {
+    ): void {
         $this->command->expects($this->once())->method('execute')->willReturn(false);
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson($this->dir, ['foo' => 'bar']);
@@ -143,10 +153,12 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
+     *
+     * @return void
      */
     public function testComposerJsonContentIsUpdatedAndDumpAutoloadIsCalledWhenExecuteMethodReturnsNewContent(
         string $type
-    ) {
+    ): void {
         $expectedComposerJson = <<< 'EOC'
             {
                 "new": "content"

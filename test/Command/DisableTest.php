@@ -50,7 +50,7 @@ class DisableTest extends TestCase
     /**
      * @dataProvider type
      */
-    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyDisabled(string $type)
+    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyDisabled(string $type): void
     {
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson(
@@ -68,7 +68,7 @@ class DisableTest extends TestCase
     /**
      * @dataProvider type
      */
-    public function testRemovesEntryFromComposerJsonAndComposerDumpAutoloadCalled(string $type)
+    public function testRemovesEntryFromComposerJsonAndComposerDumpAutoloadCalled(string $type): void
     {
         $expectedComposerJson = <<< 'EOC'
             {
@@ -100,8 +100,9 @@ class DisableTest extends TestCase
     /**
      * @dataProvider type
      */
-    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(string $type)
-    {
+    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(
+        string $type
+    ): void {
         $expectedComposerJson = <<< 'EOC'
             {
                 "foo": "bar"

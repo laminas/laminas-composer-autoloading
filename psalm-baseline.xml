@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.6.4@97fe86c4e158b5a57c5150aa5055c38b5a809aab">
+  <file src="src/Command.php">
+    <InvalidStringClass occurrences="1">
+      <code>new $command($this-&gt;projectDir, $this-&gt;modulesPath, $this-&gt;composer)</code>
+    </InvalidStringClass>
+    <MixedArgument occurrences="7">
+      <code>$args[$i + 1]</code>
+      <code>$args[$i]</code>
+      <code>$dest</code>
+      <code>$movedModuleClass</code>
+      <code>$movedModuleClass</code>
+      <code>$this-&gt;module</code>
+      <code>array_shift($args)</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="7">
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$dest</code>
+      <code>$movedModuleClass</code>
+      <code>$this-&gt;composer</code>
+      <code>$this-&gt;module</code>
+      <code>$this-&gt;type</code>
+    </MixedAssignment>
+    <RedundantCastGivenDocblockType occurrences="1">
+      <code>(string) $command</code>
+    </RedundantCastGivenDocblockType>
+    <UndefinedMethod occurrences="1">
+      <code>getMovedModuleClass</code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/Command/AbstractCommand.php">
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>[]</code>
+    </InvalidPropertyAssignmentValue>
+    <MixedReturnTypeCoercion occurrences="2">
+      <code>$composerPackage</code>
+      <code>array{autoload: array&lt;string, array&lt;string, string&gt;|mixed&gt;|mixed}</code>
+    </MixedReturnTypeCoercion>
+  </file>
+  <file src="src/Command/Disable.php">
+    <LessSpecificReturnStatement occurrences="1">
+      <code>$composerPackage</code>
+    </LessSpecificReturnStatement>
+    <MixedArrayAccess occurrences="1">
+      <code>$composerPackage['autoload'][$type]</code>
+    </MixedArrayAccess>
+    <MoreSpecificReturnType occurrences="1">
+      <code>false|array{autoload: array&lt;string, array&lt;string, string&gt;|mixed&gt;|mixed}</code>
+    </MoreSpecificReturnType>
+  </file>
+  <file src="src/Command/Enable.php">
+    <MixedArrayAssignment occurrences="1">
+      <code>$composerPackage['autoload'][$type]</code>
+    </MixedArrayAssignment>
+    <RedundantCastGivenDocblockType occurrences="1">
+      <code>(bool) $value</code>
+    </RedundantCastGivenDocblockType>
+  </file>
+  <file src="test/Command/AbstractCommandTest.php">
+    <DeprecatedMethod occurrences="1">
+      <code>setMethods</code>
+    </DeprecatedMethod>
+    <InvalidPropertyAssignmentValue occurrences="1"/>
+    <MixedMethodCall occurrences="1">
+      <code>at</code>
+    </MixedMethodCall>
+  </file>
+  <file src="test/Command/DisableTest.php">
+    <MixedArgument occurrences="2">
+      <code>$json['autoload'][$type]</code>
+      <code>$json['autoload'][$type]</code>
+    </MixedArgument>
+    <MixedArrayAccess occurrences="4">
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="2">
+      <code>$json</code>
+      <code>$json</code>
+    </MixedAssignment>
+  </file>
+  <file src="test/Command/EnableTest.php">
+    <InvalidDocblock occurrences="1">
+      <code>null|array&lt;string-string&gt;</code>
+    </InvalidDocblock>
+    <MixedArgument occurrences="5">
+      <code>$json['autoload'][$type]</code>
+      <code>$json['autoload'][$type]</code>
+      <code>$json['autoload'][$type]</code>
+      <code>$newModuleFile-&gt;url()</code>
+      <code>reset($expected)</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>key($expected)</code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess occurrences="7">
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+      <code>$json['autoload']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="4">
+      <code>$json</code>
+      <code>$json</code>
+      <code>$json</code>
+      <code>$newModuleFile</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="3">
+      <code>at</code>
+      <code>getContent</code>
+      <code>url</code>
+    </MixedMethodCall>
+    <UndefinedInterfaceMethod occurrences="1">
+      <code>getChild</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="test/ProjectSetupTrait.php">
+    <MissingClosureParamType occurrences="1">
+      <code>$command</code>
+    </MissingClosureParamType>
+    <MixedInferredReturnType occurrences="2">
+      <code>vfsStreamFile</code>
+      <code>vfsStreamFile</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="2">
+      <code>at</code>
+      <code>at</code>
+    </MixedMethodCall>
+  </file>
+</files>

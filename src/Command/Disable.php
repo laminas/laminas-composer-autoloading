@@ -16,6 +16,8 @@ class Disable extends AbstractCommand
      * Removes autoloading rule from composer.json, and executes composer dump-autoload.
      *
      * {@inheritdoc}
+     *
+     * @return false|array{autoload: array<string, array<string, string>|mixed>|mixed}
      */
     protected function execute()
     {

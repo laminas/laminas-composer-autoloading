@@ -50,7 +50,7 @@ class EnableTest extends TestCase
     /**
      * @dataProvider type
      */
-    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyEnabled(string $type)
+    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyEnabled(string $type): void
     {
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson(
@@ -68,7 +68,7 @@ class EnableTest extends TestCase
     /**
      * @dataProvider type
      */
-    public function testAddsEntryToComposerJsonAndComposerDumpAutoloadCalled(string $type)
+    public function testAddsEntryToComposerJsonAndComposerDumpAutoloadCalled(string $type): void
     {
         $expectedComposerJson = <<< 'EOC'
             {
@@ -103,8 +103,9 @@ class EnableTest extends TestCase
     /**
      * @dataProvider type
      */
-    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(string $type)
-    {
+    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(
+        string $type
+    ): void {
         $expectedComposerJson = <<< 'EOC'
             {
                 "autoload": {
@@ -133,7 +134,7 @@ class EnableTest extends TestCase
     /**
      * @dataProvider type
      */
-    public function testModuleClassFileDoesNotContainModuleClassSoItIsNotMoved(string $type)
+    public function testModuleClassFileDoesNotContainModuleClassSoItIsNotMoved(string $type): void
     {
         $this->setUpModule($this->modulesDir, 'FooApp', $type);
         $this->setUpComposerJson($this->dir, []);
@@ -164,7 +165,7 @@ class EnableTest extends TestCase
     /**
      * @dataProvider moveModuleClassFile
      */
-    public function testModuleClassFileExistsInBothLocationSoItIsNotMoved(string $type, bool $move)
+    public function testModuleClassFileExistsInBothLocationSoItIsNotMoved(string $type, bool $move): void
     {
         $this->setUpModule($this->modulesDir, 'BarApp', $type);
         $this->setUpComposerJson($this->dir, []);
@@ -186,9 +187,10 @@ class EnableTest extends TestCase
 
     /**
      * @dataProvider moveModuleClassFile
+     *
      * @psalm-param null|array<string-string> $expected
      */
-    public function testMovesModuleClassFile(string $type, bool $move, ?array $expected)
+    public function testMovesModuleClassFile(string $type, bool $move, ?array $expected): void
     {
         $expectedModuleFileContent = <<< 'EOM'
             <?php
