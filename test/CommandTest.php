@@ -84,8 +84,10 @@ class CommandTest extends TestCase
      * @dataProvider helpRequest
      *
      * @param string[] $args
+     *
+     * @return void
      */
-    public function testHelpRequestsEmitHelpToStdout(array $args)
+    public function testHelpRequestsEmitHelpToStdout(array $args): void
     {
         $this->assertHelpOutput();
         $this->assertEquals(0, $this->command->process($args));
@@ -125,6 +127,8 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider argument
+     *
+     * @return void
      */
     public function testArgumentIsSetAndHasExpectedValue(
         string $action,
@@ -132,20 +136,20 @@ class CommandTest extends TestCase
         string $value,
         string $propertyName,
         string $expectedValue
-    ) {
+    ): void {
         $this->command->process([$action, $argument, $value, 'module-name']);
 
         $this->assertAttributeSame($expectedValue, $propertyName, $this->command);
     }
 
-    public function testDefaultArgumentsValues()
+    public function testDefaultArgumentsValues(): void
     {
         $this->assertAttributeSame('module', 'modulesPath', $this->command);
         $this->assertAttributeSame('composer', 'composer', $this->command);
         $this->assertAttributeSame(null, 'type', $this->command);
     }
 
-    public function testUnknownCommandEmitsHelpToStderrWithErrorMessage()
+    public function testUnknownCommandEmitsHelpToStderrWithErrorMessage(): void
     {
         $this->console
             ->expects($this->atLeastOnce())
@@ -167,8 +171,10 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
+     *
+     * @return void
      */
-    public function testCommandErrorIfNoModuleNameProvided(string $action)
+    public function testCommandErrorIfNoModuleNameProvided(string $action): void
     {
         $this->console
             ->expects($this->atLeastOnce())
@@ -181,8 +187,10 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
+     *
+     * @return void
      */
-    public function testCommandErrorIfInvalidNumberOfArgumentsProvided(string $action)
+    public function testCommandErrorIfInvalidNumberOfArgumentsProvided(string $action): void
     {
         $this->console
             ->expects($this->atLeastOnce())
@@ -195,8 +203,10 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
+     *
+     * @return void
      */
-    public function testCommandErrorIfUnknownArgumentProvided(string $action)
+    public function testCommandErrorIfUnknownArgumentProvided(string $action): void
     {
         $this->console
             ->expects($this->atLeastOnce())
@@ -209,11 +219,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider action
+     *
+     * @return void
      */
-    public function testCommandErrorIfModulesDirectoryDoesNotExist(string $action)
+    public function testCommandErrorIfModulesDirectoryDoesNotExist(string $action): void
     {
         $this->console
             ->expects($this->atLeastOnce())
@@ -227,11 +240,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider action
+     *
+     * @return void
      */
-    public function testCommandErrorIfModuleDoesNotExist(string $action)
+    public function testCommandErrorIfModuleDoesNotExist(string $action): void
     {
         vfsStream::newDirectory('module')->at($this->dir);
 
@@ -247,11 +263,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider action
+     *
+     * @return void
      */
-    public function testCommandErrorIfComposerIsNotExecutable(string $action)
+    public function testCommandErrorIfComposerIsNotExecutable(string $action): void
     {
         $modulesDir = vfsStream::newDirectory('module')->at($this->dir);
         $this->setUpModule($modulesDir, 'module-name', 'psr4');
@@ -280,8 +299,10 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider invalidType
+     *
+     * @return void
      */
-    public function testCommandErrorIfInvalidTypeProvided(string $action, string $type)
+    public function testCommandErrorIfInvalidTypeProvided(string $action, string $type): void
     {
         $modulesDir = vfsStream::newDirectory('module')->at($this->dir);
         $this->setUpModule($modulesDir, 'module-name', 'psr4');
@@ -310,8 +331,10 @@ class CommandTest extends TestCase
      * @runInSeparateProcess
      *
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testErrorMessageWhenActionProcessThrowsException(string $type)
+    public function testErrorMessageWhenActionProcessThrowsException(string $type): void
     {
         Mockery::mock('overload:' . MyTestingCommand::class)
             ->shouldReceive('process')
@@ -335,11 +358,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testMessageOnEnableWhenModuleIsAlreadyEnabled(string $type)
+    public function testMessageOnEnableWhenModuleIsAlreadyEnabled(string $type): void
     {
         Mockery::mock('overload:' . Command\Enable::class)
             ->shouldReceive('process')
@@ -361,11 +387,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testSuccessMessageOnEnable(string $type)
+    public function testSuccessMessageOnEnable(string $type): void
     {
         $mock = Mockery::mock('overload:' . Command\Enable::class);
         $mock
@@ -396,11 +425,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testSuccessMessageOnEnableAndModuleClassFileMoved(string $type)
+    public function testSuccessMessageOnEnableAndModuleClassFileMoved(string $type): void
     {
         $mock = Mockery::mock('overload:' . Command\Enable::class);
         $mock
@@ -432,11 +464,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testMessageOnDisableWhenModuleIsAlreadyDisabled(string $type)
+    public function testMessageOnDisableWhenModuleIsAlreadyDisabled(string $type): void
     {
         Mockery::mock('overload:' . Command\Disable::class)
             ->shouldReceive('process')
@@ -458,11 +493,14 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @preserveGlobalState disabled
      *
      * @dataProvider type
+     *
+     * @return void
      */
-    public function testSuccessMessageOnDisable(string $type)
+    public function testSuccessMessageOnDisable(string $type): void
     {
         Mockery::mock('overload:' . Command\Disable::class)
             ->shouldReceive('process')

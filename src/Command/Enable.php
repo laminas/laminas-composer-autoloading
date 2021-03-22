@@ -26,6 +26,10 @@ class Enable extends AbstractCommand
      * Writes new rules to composer.json, and executes composer dump-autoload.
      *
      * {@inheritdoc}
+     *
+     * @return ((mixed|string[])[]|mixed)[]|false
+     *
+     * @psalm-return array{autoload: array<string, array<string, string>|mixed>|mixed}|false
      */
     protected function execute()
     {

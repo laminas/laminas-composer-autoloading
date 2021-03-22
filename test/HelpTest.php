@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class HelpTest extends TestCase
 {
-    public function testWritesHelpMessageToConsoleUsingCommandProvidedAtInstantiationAndResourceAtInvocation()
+    public function testWritesHelpMessageToConsoleUsingCommandProvidedAtInstantiationAndResourceAtInvocation(): void
     {
         $resource = fopen('php://temp', 'wb+');
 
@@ -36,7 +36,7 @@ class HelpTest extends TestCase
         $this->assertNull($command($resource));
     }
 
-    public function testTruncatesCommandToBasenameIfItIsARealpath()
+    public function testTruncatesCommandToBasenameIfItIsARealpath(): void
     {
         $resource = fopen('php://temp', 'wb+');
 

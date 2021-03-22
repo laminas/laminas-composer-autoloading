@@ -85,7 +85,8 @@ abstract class AbstractCommand
     /**
      * Validate that the composer.json exists, is writable, and contains valid contents.
      *
-     * @return string
+     * @return array
+     *
      * @throws Exception\RuntimeException
      */
     public function getComposerJson()
