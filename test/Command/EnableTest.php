@@ -27,7 +27,7 @@ class EnableTest extends TestCase
     /** @var Command\Enable */
     private $command;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -36,7 +36,10 @@ class EnableTest extends TestCase
         $this->command = new Command\Enable($this->dir->url(), 'my-modules', $this->composer);
     }
 
-    public function type()
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    public function type(): array
     {
         return [
             'psr-0' => ['psr-0'],
@@ -46,10 +49,8 @@ class EnableTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyEnabled($type)
+    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyEnabled(string $type)
     {
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson(
@@ -66,22 +67,20 @@ class EnableTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testAddsEntryToComposerJsonAndComposerDumpAutoloadCalled($type)
+    public function testAddsEntryToComposerJsonAndComposerDumpAutoloadCalled(string $type)
     {
         $expectedComposerJson = <<< 'EOC'
-{
-    "autoload": {
-        "%s": {
-            "Other\\": "path/to/other",
-            "App\\": "my-modules/App/src/"
-        }
-    }
-}
-
-EOC;
+            {
+                "autoload": {
+                    "%s": {
+                        "Other\\": "path/to/other",
+                        "App\\": "my-modules/App/src/"
+                    }
+                }
+            }
+            
+            EOC;
 
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson(
@@ -103,21 +102,19 @@ EOC;
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType($type)
+    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(string $type)
     {
         $expectedComposerJson = <<< 'EOC'
-{
-    "autoload": {
-        "%s": {
-            "MyApp\\": "my-modules/MyApp/src/"
-        }
-    }
-}
-
-EOC;
+            {
+                "autoload": {
+                    "%s": {
+                        "MyApp\\": "my-modules/MyApp/src/"
+                    }
+                }
+            }
+            
+            EOC;
 
         $this->setUpModule($this->modulesDir, 'MyApp', $type);
         $composerJson = $this->setUpComposerJson($this->dir, []);
@@ -135,10 +132,8 @@ EOC;
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testModuleClassFileDoesNotContainModuleClassSoItIsNotMoved($type)
+    public function testModuleClassFileDoesNotContainModuleClassSoItIsNotMoved(string $type)
     {
         $this->setUpModule($this->modulesDir, 'FooApp', $type);
         $this->setUpComposerJson($this->dir, []);
@@ -149,7 +144,14 @@ EOC;
         $this->assertNull($this->command->getMovedModuleClass());
     }
 
-    public function moveModuleClassFile()
+    /**
+     * @psalm-return array<string, array{
+     *     0: string,
+     *     1: bool,
+     *     2: null|array<string, string>
+     * }>
+     */
+    public function moveModuleClassFile(): array
     {
         return [
             'psr-0-move'     => ['psr-0', true,  ['%s/%s/Module.php' => '%s/%s/src/Module.php']],
@@ -161,11 +163,8 @@ EOC;
 
     /**
      * @dataProvider moveModuleClassFile
-     *
-     * @param string $type
-     * @param bool $move
      */
-    public function testModuleClassFileExistsInBothLocationSoItIsNotMoved($type, $move)
+    public function testModuleClassFileExistsInBothLocationSoItIsNotMoved(string $type, bool $move)
     {
         $this->setUpModule($this->modulesDir, 'BarApp', $type);
         $this->setUpComposerJson($this->dir, []);
@@ -187,27 +186,24 @@ EOC;
 
     /**
      * @dataProvider moveModuleClassFile
-     *
-     * @param string $type
-     * @param bool $move
-     * @param null|array $expected
+     * @psalm-param null|array<string-string> $expected
      */
-    public function testMovesModuleClassFile($type, $move, $expected)
+    public function testMovesModuleClassFile(string $type, bool $move, ?array $expected)
     {
         $expectedModuleFileContent = <<< 'EOM'
-<?php
-
-namespace %s;
-
-class Module
-{
-    public function getConfigDir()
-    {
-        return __DIR__ . '/../config/';
-    }
-}
-
-EOM;
+            <?php
+            
+            namespace %s;
+            
+            class Module
+            {
+                public function getConfigDir()
+                {
+                    return __DIR__ . '/../config/';
+                }
+            }
+            
+            EOM;
 
         $this->setUpModule($this->modulesDir, 'FooApp', $type);
         $this->setUpComposerJson($this->dir, []);
@@ -223,7 +219,7 @@ EOM;
             $from = sprintf(key($expected), $this->modulesDir->url(), 'FooApp');
             $to = sprintf(reset($expected), $this->modulesDir->url(), 'FooApp');
             $this->assertEquals([$from => $to], $this->command->getMovedModuleClass());
-            $this->assertFileNotExists($moduleFile->url());
+            $this->assertFileDoesNotExist($moduleFile->url());
             $newModuleFile = vfsStream::url('project/my-modules/FooApp/src/Module.php');
             $this->assertFileExists($newModuleFile);
             $this->assertEquals(

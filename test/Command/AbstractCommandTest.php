@@ -13,8 +13,8 @@ use Laminas\ComposerAutoloading\Exception;
 use LaminasTest\ComposerAutoloading\ProjectSetupTrait;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
 class AbstractCommandTest extends TestCase
 {
@@ -26,10 +26,13 @@ class AbstractCommandTest extends TestCase
     /** @var vfsStreamDirectory */
     private $modulesDir;
 
-    /** @var Command\AbstractCommand|PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var Command\AbstractCommand|MockObject
+     * @psalm-var Command\AbstractCommand&MockObject
+     */
     private $command;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +47,10 @@ class AbstractCommandTest extends TestCase
             ->getMockForAbstractClass();
     }
 
-    public function type()
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    public function type(): array
     {
         return [
             'psr-0' => ['psr-0'],
@@ -54,10 +60,8 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testThrowsExceptionWhenComposerJsonDoesNotExist($type)
+    public function testThrowsExceptionWhenComposerJsonDoesNotExist(string $type)
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -69,10 +73,8 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testThrowsExceptionWhenComposerJsonIsNotWritable($type)
+    public function testThrowsExceptionWhenComposerJsonIsNotWritable(string $type)
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -85,10 +87,8 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testThrowsExceptionWhenComposerJsonHasInvalidContent($type)
+    public function testThrowsExceptionWhenComposerJsonHasInvalidContent(string $type)
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -103,10 +103,8 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testThrowsExceptionWhenComposerJsonHasNoContent($type)
+    public function testThrowsExceptionWhenComposerJsonHasNoContent(string $type)
     {
         $this->command->expects($this->never())->method('execute');
         $this->setUpModule($this->modulesDir, 'App', $type);
@@ -130,11 +128,10 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testComposerJsonContentIsNotChangedAndDumpAutoloadIsNotCalledWhenExecuteMethodReturnsFalse($type)
-    {
+    public function testComposerJsonContentIsNotChangedAndDumpAutoloadIsNotCalledWhenExecuteMethodReturnsFalse(
+        string $type
+    ) {
         $this->command->expects($this->once())->method('execute')->willReturn(false);
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson($this->dir, ['foo' => 'bar']);
@@ -146,17 +143,16 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testComposerJsonContentIsUpdatedAndDumpAutoloadIsCalledWhenExecuteMethodReturnsNewContent($type)
-    {
+    public function testComposerJsonContentIsUpdatedAndDumpAutoloadIsCalledWhenExecuteMethodReturnsNewContent(
+        string $type
+    ) {
         $expectedComposerJson = <<< 'EOC'
-{
-    "new": "content"
-}
-
-EOC;
+            {
+                "new": "content"
+            }
+            
+            EOC;
 
         $this->command->expects($this->once())->method('execute')->willReturn(['new' => 'content']);
         $this->setUpModule($this->modulesDir, 'App', $type);

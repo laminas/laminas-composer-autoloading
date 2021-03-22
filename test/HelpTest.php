@@ -11,7 +11,6 @@ namespace LaminasTest\ComposerAutoloading;
 use Laminas\ComposerAutoloading\Help;
 use Laminas\Stdlib\ConsoleHelper;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 
 class HelpTest extends TestCase
 {
@@ -19,21 +18,20 @@ class HelpTest extends TestCase
     {
         $resource = fopen('php://temp', 'wb+');
 
-        $console = $this->prophesize(ConsoleHelper::class);
+        /** @psalm-var ConsoleHelper&\PHPUnit\Framework\MockObject\MockObject $console */
+        $console = $this->createMock(ConsoleHelper::class);
         $console
-            ->writeLine(
-                Argument::that(function ($message) {
+            ->expects($this->atLeastOnce())
+            ->method('writeLine')
+            ->with(
+                $this->callback(function (string $message): bool {
                     return false !== strpos($message, 'laminas-composer-autoloading');
                 }),
                 true,
                 $resource
-            )
-            ->shouldBeCalled();
+            );
 
-        $command = new Help(
-            'laminas-composer-autoloading',
-            $console->reveal()
-        );
+        $command = new Help('laminas-composer-autoloading', $console);
 
         $this->assertNull($command($resource));
     }
@@ -42,21 +40,20 @@ class HelpTest extends TestCase
     {
         $resource = fopen('php://temp', 'wb+');
 
-        $console = $this->prophesize(ConsoleHelper::class);
+        /** @psalm-var ConsoleHelper&\PHPUnit\Framework\MockObject\MockObject $console */
+        $console = $this->createMock(ConsoleHelper::class);
         $console
-            ->writeLine(
-                Argument::that(function ($message) {
+            ->expects($this->atLeastOnce())
+            ->method('writeLine')
+            ->with(
+                $this->callback(function (string $message): bool {
                     return false !== strpos($message, basename(__FILE__));
                 }),
                 true,
                 $resource
-            )
-            ->shouldBeCalled();
+            );
 
-        $command = new Help(
-            realpath(__FILE__),
-            $console->reveal()
-        );
+        $command = new Help(realpath(__FILE__), $console);
 
         $this->assertNull($command($resource));
     }

@@ -15,10 +15,10 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionObject;
+use ReflectionProperty;
 
 class CommandTest extends TestCase
 {
@@ -30,25 +30,43 @@ class CommandTest extends TestCase
     /** @var vfsStreamDirectory */
     private $dir;
 
-    /** @var ConsoleHelper|ObjectProphecy */
+    /**
+     * @var ConsoleHelper|MockObject
+     * @psalm-var ConsoleHelper&MockObject
+     */
     private $console;
 
     /** @var Command */
     private $command;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->dir = vfsStream::setup('project');
 
-        $this->console = $this->prophesize(ConsoleHelper::class);
+        $this->console = $this->createMock(ConsoleHelper::class);
 
-        $this->command = new Command(self::TEST_COMMAND_NAME, $this->console->reveal());
+        $this->command = new Command(self::TEST_COMMAND_NAME, $this->console);
         $this->setProjectDir($this->command, $this->dir->url());
     }
 
-    public function helpRequest()
+    /** @param mixed $expected */
+    protected function assertAttributeSame(
+        $expected,
+        string $property,
+        object $instance,
+        string $message = ''
+    ): void {
+        $r = new ReflectionProperty($instance, $property);
+        $r->setAccessible(true);
+        self::assertSame($expected, $r->getValue($instance), $message);
+    }
+
+    /**
+     * @psalm-return array<string, array<array-key, string[]>>
+     */
+    public function helpRequest(): array
     {
         return [
             'no-args'                     => [[]],
@@ -73,7 +91,16 @@ class CommandTest extends TestCase
         $this->assertEquals(0, $this->command->process($args));
     }
 
-    public function argument()
+    /**
+     * @psalm-return array<array-key, array{
+     *     0: string,
+     *     1: string,
+     *     2: string,
+     *     3: string,
+     *     4: string,
+     * }>
+     */
+    public function argument(): array
     {
         return [
             // $action, $argument,        $value,          $propertyName, $expectedValue
@@ -98,15 +125,14 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider argument
-     *
-     * @param string $action
-     * @param string $argument
-     * @param string $value
-     * @param string $propertyName
-     * @param string $expectedValue
      */
-    public function testArgumentIsSetAndHasExpectedValue($action, $argument, $value, $propertyName, $expectedValue)
-    {
+    public function testArgumentIsSetAndHasExpectedValue(
+        string $action,
+        string $argument,
+        string $value,
+        string $propertyName,
+        string $expectedValue
+    ) {
         $this->command->process([$action, $argument, $value, 'module-name']);
 
         $this->assertAttributeSame($expectedValue, $propertyName, $this->command);
@@ -122,14 +148,16 @@ class CommandTest extends TestCase
     public function testUnknownCommandEmitsHelpToStderrWithErrorMessage()
     {
         $this->console
-            ->writeErrorMessage(Argument::containingString('Unknown command'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Unknown command'));
         $this->assertHelpOutput(STDERR);
 
         $this->assertEquals(1, $this->command->process(['foo', 'bar']));
     }
 
-    public function action()
+    /** @psalm-return array<string, array{0: string}> */
+    public function action(): array
     {
         return [
             'disable' => ['disable'],
@@ -139,14 +167,13 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
-     *
-     * @param string $action
      */
-    public function testCommandErrorIfNoModuleNameProvided($action)
+    public function testCommandErrorIfNoModuleNameProvided(string $action)
     {
         $this->console
-            ->writeErrorMessage(Argument::containingString('Invalid module name'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Invalid module name'));
         $this->assertHelpOutput(STDERR);
 
         $this->assertEquals(1, $this->command->process([$action]));
@@ -154,14 +181,13 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
-     *
-     * @param string $action
      */
-    public function testCommandErrorIfInvalidNumberOfArgumentsProvided($action)
+    public function testCommandErrorIfInvalidNumberOfArgumentsProvided(string $action)
     {
         $this->console
-            ->writeErrorMessage(Argument::containingString('Invalid arguments'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Invalid arguments'));
         $this->assertHelpOutput(STDERR);
 
         $this->assertEquals(1, $this->command->process([$action, 'invalid', 'module-name']));
@@ -169,14 +195,13 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
-     *
-     * @param string $action
      */
-    public function testCommandErrorIfUnknownArgumentProvided($action)
+    public function testCommandErrorIfUnknownArgumentProvided(string $action)
     {
         $this->console
-            ->writeErrorMessage(Argument::containingString('Unknown argument "--invalid" provided'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Unknown argument "--invalid" provided'));
         $this->assertHelpOutput(STDERR);
 
         $this->assertEquals(1, $this->command->process([$action, '--invalid', 'value', 'module-name']));
@@ -187,14 +212,13 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider action
-     *
-     * @param string $action
      */
-    public function testCommandErrorIfModulesDirectoryDoesNotExist($action)
+    public function testCommandErrorIfModulesDirectoryDoesNotExist(string $action)
     {
         $this->console
-            ->writeErrorMessage(Argument::containingString('Unable to determine modules directory'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Unable to determine modules directory'));
         $this->assertHelpOutput(STDERR);
         $this->assertComposerBinaryExecutable();
 
@@ -206,16 +230,15 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider action
-     *
-     * @param string $action
      */
-    public function testCommandErrorIfModuleDoesNotExist($action)
+    public function testCommandErrorIfModuleDoesNotExist(string $action)
     {
         vfsStream::newDirectory('module')->at($this->dir);
 
         $this->console
-            ->writeErrorMessage(Argument::containingString('Could not locate module "module-name"'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Could not locate module "module-name"'));
         $this->assertHelpOutput(STDERR);
         $this->assertComposerBinaryExecutable();
 
@@ -227,25 +250,25 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider action
-     *
-     * @param string $action
      */
-    public function testCommandErrorIfComposerIsNotExecutable($action)
+    public function testCommandErrorIfComposerIsNotExecutable(string $action)
     {
         $modulesDir = vfsStream::newDirectory('module')->at($this->dir);
         $this->setUpModule($modulesDir, 'module-name', 'psr4');
         $this->setUpComposerJson($this->dir, []);
 
         $this->console
-            ->writeErrorMessage(Argument::containingString('Unable to determine composer binary'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Unable to determine composer binary'));
         $this->assertHelpOutput(STDERR);
         $this->assertComposerBinaryNotExecutable();
 
         $this->assertEquals(1, $this->command->process([$action, 'module-name']));
     }
 
-    public function invalidType()
+    /** @psalm-return array<string, array{0: string, 1: string}> */
+    public function invalidType(): array
     {
         return [
             'enable-invalid-psr-0'  => ['enable', 'psr-0'],
@@ -257,26 +280,25 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider invalidType
-     *
-     * @param string $action
-     * @param string $type
      */
-    public function testCommandErrorIfInvalidTypeProvided($action, $type)
+    public function testCommandErrorIfInvalidTypeProvided(string $action, string $type)
     {
         $modulesDir = vfsStream::newDirectory('module')->at($this->dir);
         $this->setUpModule($modulesDir, 'module-name', 'psr4');
         $this->setUpComposerJson($this->dir, []);
 
         $this->console
-            ->writeErrorMessage(Argument::containingString('Invalid type provided; must be one of psr0 or psr4'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Invalid type provided; must be one of psr0 or psr4'));
         $this->assertHelpOutput(STDERR);
 
         $result = $this->command->process([$action, '--type', $type, 'module-name']);
         $this->assertEquals(1, $result);
     }
 
-    public function type()
+    /** @psalm-return array<string, array{0: string}> */
+    public function type(): array
     {
         return [
             'psr-0' => ['psr0'],
@@ -288,10 +310,8 @@ class CommandTest extends TestCase
      * @runInSeparateProcess
      *
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testErrorMessageWhenActionProcessThrowsException($type)
+    public function testErrorMessageWhenActionProcessThrowsException(string $type)
     {
         Mockery::mock('overload:' . MyTestingCommand::class)
             ->shouldReceive('process')
@@ -303,8 +323,9 @@ class CommandTest extends TestCase
         $this->setUpModule($modulesDir, 'App', $type);
 
         $this->console
-            ->writeErrorMessage(Argument::containingString('Testing Exception Message'))
-            ->shouldBeCalled();
+            ->expects($this->atLeastOnce())
+            ->method('writeErrorMessage')
+            ->with($this->stringContains('Testing Exception Message'));
         $this->assertNotHelpOutput(STDERR);
         $this->assertComposerBinaryExecutable();
 
@@ -317,10 +338,8 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testMessageOnEnableWhenModuleIsAlreadyEnabled($type)
+    public function testMessageOnEnableWhenModuleIsAlreadyEnabled(string $type)
     {
         Mockery::mock('overload:' . Command\Enable::class)
             ->shouldReceive('process')
@@ -332,9 +351,9 @@ class CommandTest extends TestCase
         $this->setUpModule($modulesDir, 'App', $type);
 
         $this->console
-            ->writeLine(Argument::containingString('Autoloading rules already exist for the module "App"'))
-            ->shouldBeCalled();
-        $this->assertNotHelpOutput(STDERR);
+            ->expects($this->once())
+            ->method('writeLine')
+            ->with('Autoloading rules already exist for the module "App"');
         $this->assertComposerBinaryExecutable();
 
         $this->assertEquals(0, $this->command->process(['enable', 'App']));
@@ -345,10 +364,8 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testSuccessMessageOnEnable($type)
+    public function testSuccessMessageOnEnable(string $type)
     {
         $mock = Mockery::mock('overload:' . Command\Enable::class);
         $mock
@@ -366,14 +383,12 @@ class CommandTest extends TestCase
         $this->setUpModule($modulesDir, 'App', $type);
 
         $this->console
-            ->writeLine(Argument::containingString('Successfully added composer autoloading for the module "App"'))
-            ->shouldBeCalled();
-        $this->console
-            ->writeLine(Argument::containingString(
-                'You can now safely remove the App\Module::getAutoloaderConfig() implementation'
-            ))
-            ->shouldBeCalled();
-        $this->assertNotHelpOutput(STDERR);
+             ->expects($this->exactly(2))
+             ->method('writeLine')
+             ->withConsecutive(
+                 ['Successfully added composer autoloading for the module "App"'],
+                 ['You can now safely remove the App\Module::getAutoloaderConfig() implementation.'],
+             );
         $this->assertComposerBinaryExecutable();
 
         $this->assertEquals(0, $this->command->process(['enable', 'App']));
@@ -384,10 +399,8 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testSuccessMessageOnEnableAndModuleClassFileMoved($type)
+    public function testSuccessMessageOnEnableAndModuleClassFileMoved(string $type)
     {
         $mock = Mockery::mock('overload:' . Command\Enable::class);
         $mock
@@ -405,17 +418,13 @@ class CommandTest extends TestCase
         $this->setUpModule($modulesDir, 'App', $type);
 
         $this->console
-            ->writeLine(Argument::containingString('Successfully added composer autoloading for the module "App"'))
-            ->shouldBeCalled();
-        $this->console
-            ->writeLine(Argument::containingString(
-                'You can now safely remove the App\Module::getAutoloaderConfig() implementation'
-            ))
-            ->shouldBeCalled();
-        $this->console
-            ->writeLine(Argument::containingString('Renaming from-foo to too-bar'))
-            ->shouldBeCalled();
-        $this->assertNotHelpOutput(STDERR);
+             ->expects($this->exactly(3))
+             ->method('writeLine')
+             ->withConsecutive(
+                 ['Renaming from-foo to too-bar'],
+                 ['Successfully added composer autoloading for the module "App"'],
+                 ['You can now safely remove the App\Module::getAutoloaderConfig() implementation.'],
+             );
         $this->assertComposerBinaryExecutable();
 
         $this->assertEquals(0, $this->command->process(['enable', 'App']));
@@ -426,10 +435,8 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testMessageOnDisableWhenModulesIsAlreadyDisabled($type)
+    public function testMessageOnDisableWhenModuleIsAlreadyDisabled(string $type)
     {
         Mockery::mock('overload:' . Command\Disable::class)
             ->shouldReceive('process')
@@ -441,9 +448,9 @@ class CommandTest extends TestCase
         $this->setUpModule($modulesDir, 'App', $type);
 
         $this->console
-            ->writeLine(Argument::containingString('Autoloading rules already do not exist for the module "App"'))
-            ->shouldBeCalled();
-        $this->assertNotHelpOutput(STDERR);
+             ->expects($this->once())
+             ->method('writeLine')
+             ->with('Autoloading rules already do not exist for the module "App"');
         $this->assertComposerBinaryExecutable();
 
         $this->assertEquals(0, $this->command->process(['disable', 'App']));
@@ -454,10 +461,8 @@ class CommandTest extends TestCase
      * @preserveGlobalState disabled
      *
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testSuccessMessageOnDisable($type)
+    public function testSuccessMessageOnDisable(string $type)
     {
         Mockery::mock('overload:' . Command\Disable::class)
             ->shouldReceive('process')
@@ -469,23 +474,15 @@ class CommandTest extends TestCase
         $this->setUpModule($modulesDir, 'App', $type);
 
         $this->console
-            ->writeLine(
-                Argument::containingString('Successfully removed composer autoloading for the module "App"')
-            )
-            ->shouldBeCalled();
-        $this->assertNotHelpOutput(STDERR);
+             ->expects($this->atLeastOnce())
+             ->method('writeLine')
+             ->with('Successfully removed composer autoloading for the module "App"');
         $this->assertComposerBinaryExecutable();
 
         $this->assertEquals(0, $this->command->process(['disable', 'App']));
     }
 
-    /**
-     * @param Command $command
-     * @param string $cmd
-     * @param string $class
-     * @return void
-     */
-    private function injectCommand(Command $command, $cmd, $class)
+    private function injectCommand(Command $command, string $cmd, string $class): void
     {
         $rCommand = new ReflectionObject($command);
         $rp = $rCommand->getProperty('commands');
@@ -497,12 +494,7 @@ class CommandTest extends TestCase
         $rp->setValue($command, $commands);
     }
 
-    /**
-     * @param Command $command
-     * @param string $dir
-     * @return void
-     */
-    private function setProjectDir(Command $command, $dir)
+    private function setProjectDir(Command $command, string $dir): void
     {
         $rc = new ReflectionObject($command);
         $rp = $rc->getProperty('projectDir');
@@ -510,38 +502,42 @@ class CommandTest extends TestCase
         $rp->setValue($command, $dir);
     }
 
-    private function assertHelpOutput($resource = STDOUT, $command = self::TEST_COMMAND_NAME)
+    /** @param resource $resource */
+    private function assertHelpOutput($resource = STDOUT, string $command = self::TEST_COMMAND_NAME): void
     {
         $this->console
-            ->writeLine(
-                Argument::containingString($command . ' [command] [options] modulename'),
+            ->expects($this->atLeastOnce())
+            ->method('writeLine')
+            ->with(
+                $this->stringContains($command . ' [command] [options] modulename'),
                 true,
                 $resource
-            )
-            ->shouldBeCalled();
+            );
     }
 
-    private function assertNotHelpOutput($resource = STDOUT, $command = self::TEST_COMMAND_NAME)
+    /** @param resource $resource */
+    private function assertNotHelpOutput($resource = STDOUT, string $command = self::TEST_COMMAND_NAME): void
     {
         $this->console
-            ->writeLine(
-                Argument::containingString($command . ' [command] [options] modulename'),
+            ->expects($this->never())
+            ->method('writeLine')
+            ->with(
+                $this->stringContains($command . ' [command] [options] modulename'),
                 true,
                 $resource
-            )
-            ->shouldNotBeCalled();
+            );
     }
 
-    private function assertComposerBinaryNotExecutable()
+    private function assertComposerBinaryNotExecutable(): void
     {
-        $exec = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
+        $exec   = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
         $exec->expects($this->once())->willReturnCallback(function ($command, &$output, &$retValue) {
             $this->assertEquals('composer 2>&1', $command);
             $retValue = 1;
         });
     }
 
-    private function assertComposerBinaryExecutable()
+    private function assertComposerBinaryExecutable(): void
     {
         $exec = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
         $exec->expects($this->once())->willReturnCallback(function ($command, &$output, &$retValue) {

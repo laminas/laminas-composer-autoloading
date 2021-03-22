@@ -27,7 +27,7 @@ class DisableTest extends TestCase
     /** @var Command\Disable */
     private $command;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -36,7 +36,10 @@ class DisableTest extends TestCase
         $this->command = new Command\Disable($this->dir->url(), 'my-modules', $this->composer);
     }
 
-    public function type()
+    /**
+     * @psalm-return array<string, array{0: string}>
+     */
+    public function type(): array
     {
         return [
             'psr-0' => ['psr-0'],
@@ -46,10 +49,8 @@ class DisableTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyDisabled($type)
+    public function testReturnsFalseWithoutChangesBecauseComposerAutoloadingAlreadyDisabled(string $type)
     {
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson(
@@ -66,21 +67,19 @@ class DisableTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testRemovesEntryFromComposerJsonAndComposerDumpAutoloadCalled($type)
+    public function testRemovesEntryFromComposerJsonAndComposerDumpAutoloadCalled(string $type)
     {
         $expectedComposerJson = <<< 'EOC'
-{
-    "autoload": {
-        "%s": {
-            "Other\\": "path/to/other"
-        }
-    }
-}
-
-EOC;
+            {
+                "autoload": {
+                    "%s": {
+                        "Other\\": "path/to/other"
+                    }
+                }
+            }
+            
+            EOC;
 
         $this->setUpModule($this->modulesDir, 'App', $type);
         $composerJson = $this->setUpComposerJson(
@@ -100,17 +99,15 @@ EOC;
 
     /**
      * @dataProvider type
-     *
-     * @param string $type
      */
-    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType($type)
+    public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(string $type)
     {
         $expectedComposerJson = <<< 'EOC'
-{
-    "foo": "bar"
-}
-
-EOC;
+            {
+                "foo": "bar"
+            }
+            
+            EOC;
 
         $this->setUpModule($this->modulesDir, 'MyApp', $type);
         $composerJson = $this->setUpComposerJson(
