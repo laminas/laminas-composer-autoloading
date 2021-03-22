@@ -10,31 +10,37 @@ namespace Laminas\ComposerAutoloading\Command;
 
 use Laminas\ComposerAutoloading\Exception;
 
+use function file_get_contents;
+use function file_put_contents;
+use function is_array;
+use function is_dir;
+use function is_readable;
+use function is_writable;
+use function json_decode;
+use function json_encode;
+use function json_last_error;
+use function sprintf;
+
+use const JSON_ERROR_NONE;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_UNESCAPED_UNICODE;
+
 abstract class AbstractCommand
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $projectDir;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $modulePath = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $modulesPath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $composer;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $composerJsonFile = '';
 
     /**
@@ -43,14 +49,10 @@ abstract class AbstractCommand
      */
     protected $composerPackage = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $moduleName = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $type = '';
 
     /**
@@ -60,9 +62,9 @@ abstract class AbstractCommand
      */
     public function __construct($projectDir, $modulesPath, $composer)
     {
-        $this->projectDir = $projectDir;
+        $this->projectDir  = $projectDir;
         $this->modulesPath = $modulesPath;
-        $this->composer = $composer;
+        $this->composer    = $composer;
     }
 
     /**
@@ -73,9 +75,9 @@ abstract class AbstractCommand
      */
     public function process($moduleName, $type = null)
     {
-        $this->moduleName = $moduleName;
-        $this->modulePath = sprintf('%s/%s/%s', $this->projectDir, $this->modulesPath, $moduleName);
-        $this->type = $type ?: $this->autodiscoverModuleType();
+        $this->moduleName      = $moduleName;
+        $this->modulePath      = sprintf('%s/%s/%s', $this->projectDir, $this->modulesPath, $moduleName);
+        $this->type            = $type ?: $this->autodiscoverModuleType();
         $this->composerPackage = $this->getComposerJson();
 
         $content = $this->execute();
@@ -92,7 +94,6 @@ abstract class AbstractCommand
      * Validate that the composer.json exists, is writable, and contains valid contents.
      *
      * @return array{autoload: array<string, array<string, string>|mixed>|mixed}
-     *
      * @throws Exception\RuntimeException
      */
     public function getComposerJson()
@@ -106,7 +107,7 @@ abstract class AbstractCommand
             throw new Exception\RuntimeException('composer.json file is not writable');
         }
 
-        $composerJson = file_get_contents($this->composerJsonFile);
+        $composerJson    = file_get_contents($this->composerJsonFile);
         $composerPackage = json_decode($composerJson, true);
         if (! is_array($composerPackage)) {
             $error = json_last_error();
@@ -177,6 +178,7 @@ abstract class AbstractCommand
         ) . "\n");
 
         $command = sprintf('%s dump-autoload', $this->composer);
+        // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName
         system($command);
     }
 

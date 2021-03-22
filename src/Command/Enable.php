@@ -8,16 +8,20 @@
 
 namespace Laminas\ComposerAutoloading\Command;
 
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function preg_match;
+use function preg_replace;
+use function sprintf;
+use function unlink;
+
 class Enable extends AbstractCommand
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $moveModuleClass = true;
 
-    /**
-     * @var null|string[]
-     */
+    /** @var null|string[] */
     private $movedModuleClass;
 
     /**
@@ -28,7 +32,6 @@ class Enable extends AbstractCommand
      * {@inheritdoc}
      *
      * @return ((mixed|string[])[]|mixed)[]|false
-     *
      * @psalm-return array{autoload: array<string, array<string, string>|mixed>|mixed}|false
      */
     protected function execute()
@@ -42,8 +45,8 @@ class Enable extends AbstractCommand
         }
 
         $composerPackage = $this->composerPackage;
-        $type = $this->type;
-        $module = $this->moduleName;
+        $type            = $this->type;
+        $module          = $this->moduleName;
 
         $composerPackage['autoload'][$type][$module . '\\'] = sprintf('%s/%s/src/', $this->modulesPath, $module);
 

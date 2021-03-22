@@ -10,7 +10,13 @@ namespace LaminasTest\ComposerAutoloading;
 
 use Laminas\ComposerAutoloading\Help;
 use Laminas\Stdlib\ConsoleHelper;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+
+use function basename;
+use function fopen;
+use function realpath;
+use function strpos;
 
 class HelpTest extends TestCase
 {
@@ -18,7 +24,7 @@ class HelpTest extends TestCase
     {
         $resource = fopen('php://temp', 'wb+');
 
-        /** @psalm-var ConsoleHelper&\PHPUnit\Framework\MockObject\MockObject $console */
+        /** @psalm-var ConsoleHelper&MockObject $console */
         $console = $this->createMock(ConsoleHelper::class);
         $console
             ->expects($this->atLeastOnce())
@@ -40,7 +46,7 @@ class HelpTest extends TestCase
     {
         $resource = fopen('php://temp', 'wb+');
 
-        /** @psalm-var ConsoleHelper&\PHPUnit\Framework\MockObject\MockObject $console */
+        /** @psalm-var ConsoleHelper&MockObject $console */
         $console = $this->createMock(ConsoleHelper::class);
         $console
             ->expects($this->atLeastOnce())

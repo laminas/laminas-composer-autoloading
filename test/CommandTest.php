@@ -20,12 +20,15 @@ use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use ReflectionProperty;
 
+use const STDERR;
+use const STDOUT;
+
 class CommandTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
     use ProjectSetupTrait;
 
-    const TEST_COMMAND_NAME = 'laminas-composer-autoloading';
+    public const TEST_COMMAND_NAME = 'laminas-composer-autoloading';
 
     /** @var vfsStreamDirectory */
     private $dir;
@@ -82,10 +85,7 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider helpRequest
-     *
      * @param string[] $args
-     *
-     * @return void
      */
     public function testHelpRequestsEmitHelpToStdout(array $args): void
     {
@@ -127,8 +127,6 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider argument
-     *
-     * @return void
      */
     public function testArgumentIsSetAndHasExpectedValue(
         string $action,
@@ -165,14 +163,12 @@ class CommandTest extends TestCase
     {
         return [
             'disable' => ['disable'],
-            'enable' => ['enable'],
+            'enable'  => ['enable'],
         ];
     }
 
     /**
      * @dataProvider action
-     *
-     * @return void
      */
     public function testCommandErrorIfNoModuleNameProvided(string $action): void
     {
@@ -187,8 +183,6 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
-     *
-     * @return void
      */
     public function testCommandErrorIfInvalidNumberOfArgumentsProvided(string $action): void
     {
@@ -203,8 +197,6 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider action
-     *
-     * @return void
      */
     public function testCommandErrorIfUnknownArgumentProvided(string $action): void
     {
@@ -219,12 +211,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider action
-     *
-     * @return void
      */
     public function testCommandErrorIfModulesDirectoryDoesNotExist(string $action): void
     {
@@ -240,12 +228,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider action
-     *
-     * @return void
      */
     public function testCommandErrorIfModuleDoesNotExist(string $action): void
     {
@@ -263,12 +247,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider action
-     *
-     * @return void
      */
     public function testCommandErrorIfComposerIsNotExecutable(string $action): void
     {
@@ -299,8 +279,6 @@ class CommandTest extends TestCase
 
     /**
      * @dataProvider invalidType
-     *
-     * @return void
      */
     public function testCommandErrorIfInvalidTypeProvided(string $action, string $type): void
     {
@@ -329,10 +307,7 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @dataProvider type
-     *
-     * @return void
      */
     public function testErrorMessageWhenActionProcessThrowsException(string $type): void
     {
@@ -358,12 +333,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider type
-     *
-     * @return void
      */
     public function testMessageOnEnableWhenModuleIsAlreadyEnabled(string $type): void
     {
@@ -387,12 +358,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider type
-     *
-     * @return void
      */
     public function testSuccessMessageOnEnable(string $type): void
     {
@@ -425,12 +392,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider type
-     *
-     * @return void
      */
     public function testSuccessMessageOnEnableAndModuleClassFileMoved(string $type): void
     {
@@ -464,12 +427,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider type
-     *
-     * @return void
      */
     public function testMessageOnDisableWhenModuleIsAlreadyDisabled(string $type): void
     {
@@ -493,12 +452,8 @@ class CommandTest extends TestCase
 
     /**
      * @runInSeparateProcess
-     *
      * @preserveGlobalState disabled
-     *
      * @dataProvider type
-     *
-     * @return void
      */
     public function testSuccessMessageOnDisable(string $type): void
     {
@@ -523,10 +478,10 @@ class CommandTest extends TestCase
     private function injectCommand(Command $command, string $cmd, string $class): void
     {
         $rCommand = new ReflectionObject($command);
-        $rp = $rCommand->getProperty('commands');
+        $rp       = $rCommand->getProperty('commands');
         $rp->setAccessible(true);
 
-        $commands = $rp->getValue($command);
+        $commands       = $rp->getValue($command);
         $commands[$cmd] = $class;
 
         $rp->setValue($command, $commands);
@@ -568,7 +523,7 @@ class CommandTest extends TestCase
 
     private function assertComposerBinaryNotExecutable(): void
     {
-        $exec   = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
+        $exec = $this->getFunctionMock('Laminas\ComposerAutoloading', 'exec');
         $exec->expects($this->once())->willReturnCallback(
             /**
              * @param null|string[] $output

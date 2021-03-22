@@ -10,9 +10,17 @@ namespace Laminas\ComposerAutoloading;
 
 use Laminas\Stdlib\ConsoleHelper;
 
+use function getcwd;
+use function realpath;
+use function sprintf;
+use function strtr;
+
+use const DIRECTORY_SEPARATOR;
+use const STDOUT;
+
 class Help
 {
-    const TEMPLATE = <<< 'EOT'
+    public const TEMPLATE = <<<'EOT'
 <info>Usage:</info>
 
   %s [command] [options] modulename
@@ -37,24 +45,19 @@ class Help
 
 EOT;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $command;
 
-    /**
-     * @var ConsoleHelper
-     */
+    /** @var ConsoleHelper */
     private $helper;
 
     /**
      * @param string $command Name of script invoking the command.
-     * @param ConsoleHelper $helper
      */
     public function __construct($command, ConsoleHelper $helper)
     {
         $this->command = $command;
-        $this->helper = $helper;
+        $this->helper  = $helper;
     }
 
     /**
