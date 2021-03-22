@@ -14,6 +14,9 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
+use function json_decode;
+use function sprintf;
+
 class DisableTest extends TestCase
 {
     use ProjectSetupTrait;
@@ -31,9 +34,9 @@ class DisableTest extends TestCase
     {
         parent::setUp();
 
-        $this->dir = vfsStream::setup('project');
+        $this->dir        = vfsStream::setup('project');
         $this->modulesDir = vfsStream::newDirectory('my-modules')->at($this->dir);
-        $this->command = new Command\Disable($this->dir->url(), 'my-modules', $this->composer);
+        $this->command    = new Command\Disable($this->dir->url(), 'my-modules', $this->composer);
     }
 
     /**
@@ -70,7 +73,7 @@ class DisableTest extends TestCase
      */
     public function testRemovesEntryFromComposerJsonAndComposerDumpAutoloadCalled(string $type): void
     {
-        $expectedComposerJson = <<< 'EOC'
+        $expectedComposerJson = <<<'EOC'
             {
                 "autoload": {
                     "%s": {
@@ -91,7 +94,7 @@ class DisableTest extends TestCase
         $this->assertTrue($this->command->process('App', $type));
 
         $composerJsonContent = $composerJson->getContent();
-        $json = json_decode($composerJsonContent, true);
+        $json                = json_decode($composerJsonContent, true);
         $this->assertCount(1, $json['autoload'][$type]);
         $this->assertEquals('path/to/other', $json['autoload'][$type]['Other\\']);
         $this->assertEquals(sprintf($expectedComposerJson, $type), $composerJsonContent);
@@ -103,7 +106,7 @@ class DisableTest extends TestCase
     public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(
         string $type
     ): void {
-        $expectedComposerJson = <<< 'EOC'
+        $expectedComposerJson = <<<'EOC'
             {
                 "foo": "bar"
             }

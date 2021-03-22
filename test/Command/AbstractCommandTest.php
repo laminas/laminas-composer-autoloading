@@ -16,6 +16,8 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+use function file_get_contents;
+
 class AbstractCommandTest extends TestCase
 {
     use ProjectSetupTrait;
@@ -36,7 +38,7 @@ class AbstractCommandTest extends TestCase
     {
         parent::setUp();
 
-        $this->dir = vfsStream::setup('project');
+        $this->dir        = vfsStream::setup('project');
         $this->modulesDir = vfsStream::newDirectory('module')->at($this->dir);
 
         $this->command = $this->getMockBuilder(Command\AbstractCommand::class)
@@ -60,8 +62,6 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @return void
      */
     public function testThrowsExceptionWhenComposerJsonDoesNotExist(string $type): void
     {
@@ -75,8 +75,6 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @return void
      */
     public function testThrowsExceptionWhenComposerJsonIsNotWritable(string $type): void
     {
@@ -91,8 +89,6 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @return void
      */
     public function testThrowsExceptionWhenComposerJsonHasInvalidContent(string $type): void
     {
@@ -109,8 +105,6 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @return void
      */
     public function testThrowsExceptionWhenComposerJsonHasNoContent(string $type): void
     {
@@ -136,8 +130,6 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @return void
      */
     public function testComposerJsonContentIsNotChangedAndDumpAutoloadIsNotCalledWhenExecuteMethodReturnsFalse(
         string $type
@@ -153,13 +145,11 @@ class AbstractCommandTest extends TestCase
 
     /**
      * @dataProvider type
-     *
-     * @return void
      */
     public function testComposerJsonContentIsUpdatedAndDumpAutoloadIsCalledWhenExecuteMethodReturnsNewContent(
         string $type
     ): void {
-        $expectedComposerJson = <<< 'EOC'
+        $expectedComposerJson = <<<'EOC'
             {
                 "new": "content"
             }

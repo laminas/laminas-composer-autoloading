@@ -14,12 +14,15 @@ use org\bovigo\vfs\vfsStreamContainer;
 use org\bovigo\vfs\vfsStreamFile;
 use phpmock\phpunit\PHPMock;
 
+use function json_encode;
+use function sprintf;
+
 trait ProjectSetupTrait
 {
     use PHPMock;
 
     /** @var string */
-    private $moduleFileContent = <<< 'EOM'
+    private $moduleFileContent = <<<'EOM'
         <?php
         
         namespace %s;
@@ -38,7 +41,6 @@ trait ProjectSetupTrait
     private $composer = 'my-composer.phar';
 
     /**
-     * @param vfsStreamContainer $modulesDir
      * @param string $name
      * @param string $type
      * @return void
@@ -49,11 +51,10 @@ trait ProjectSetupTrait
     }
 
     /**
-     * @param vfsStreamContainer $dir
      * @param array|null $content
      * @return vfsStreamFile
      */
-    protected function setUpComposerJson(vfsStreamContainer $dir, array $content = null)
+    protected function setUpComposerJson(vfsStreamContainer $dir, ?array $content = null)
     {
         return vfsStream::newFile('composer.json')
             ->withContent(json_encode($content))
@@ -61,7 +62,6 @@ trait ProjectSetupTrait
     }
 
     /**
-     * @param vfsStreamContainer $modulesDir
      * @param string $module
      * @param null|string $content
      * @return vfsStreamFile
@@ -80,7 +80,7 @@ trait ProjectSetupTrait
      */
     private function assertComposerDumpAutoload()
     {
-        $system = $this->getFunctionMock('Laminas\ComposerAutoloading\Command', 'system');
+        $system = $this->getFunctionMock(Command::class, 'system');
         $system->expects($this->once())->willReturnCallback(function ($command) {
             $this->assertEquals($this->composer . ' dump-autoload', $command);
         });
@@ -91,7 +91,7 @@ trait ProjectSetupTrait
      */
     private function assertNotComposerDumpAutoload()
     {
-        $system = $this->getFunctionMock('Laminas\ComposerAutoloading\Command', 'system');
+        $system = $this->getFunctionMock(Command::class, 'system');
         $system->expects($this->never());
     }
 }

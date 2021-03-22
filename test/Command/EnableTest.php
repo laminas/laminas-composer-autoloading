@@ -14,6 +14,12 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
+use function file_get_contents;
+use function json_decode;
+use function key;
+use function reset;
+use function sprintf;
+
 class EnableTest extends TestCase
 {
     use ProjectSetupTrait;
@@ -31,9 +37,9 @@ class EnableTest extends TestCase
     {
         parent::setUp();
 
-        $this->dir = vfsStream::setup('project');
+        $this->dir        = vfsStream::setup('project');
         $this->modulesDir = vfsStream::newDirectory('my-modules')->at($this->dir);
-        $this->command = new Command\Enable($this->dir->url(), 'my-modules', $this->composer);
+        $this->command    = new Command\Enable($this->dir->url(), 'my-modules', $this->composer);
     }
 
     /**
@@ -70,7 +76,7 @@ class EnableTest extends TestCase
      */
     public function testAddsEntryToComposerJsonAndComposerDumpAutoloadCalled(string $type): void
     {
-        $expectedComposerJson = <<< 'EOC'
+        $expectedComposerJson = <<<'EOC'
             {
                 "autoload": {
                     "%s": {
@@ -92,7 +98,7 @@ class EnableTest extends TestCase
         $this->assertTrue($this->command->process('App', $type));
 
         $composerJsonContent = $composerJson->getContent();
-        $json = json_decode($composerJsonContent, true);
+        $json                = json_decode($composerJsonContent, true);
         $this->assertCount(2, $json['autoload'][$type]);
         $this->assertEquals('path/to/other', $json['autoload'][$type]['Other\\']);
         $this->assertEquals('my-modules/App/src/', $json['autoload'][$type]['App\\']);
@@ -106,7 +112,7 @@ class EnableTest extends TestCase
     public function testAddsCorrectEntryToComposerJsonAndComposerDumpAutoloadCalledAutodiscoveryModuleType(
         string $type
     ): void {
-        $expectedComposerJson = <<< 'EOC'
+        $expectedComposerJson = <<<'EOC'
             {
                 "autoload": {
                     "%s": {
@@ -124,7 +130,7 @@ class EnableTest extends TestCase
         $this->assertTrue($this->command->process('MyApp'));
 
         $composerJsonContent = $composerJson->getContent();
-        $json = json_decode($composerJsonContent, true);
+        $json                = json_decode($composerJsonContent, true);
         $this->assertCount(1, $json['autoload'][$type]);
         $this->assertEquals('my-modules/MyApp/src/', $json['autoload'][$type]['MyApp\\']);
         $this->assertEquals(sprintf($expectedComposerJson, $type), $composerJsonContent);
@@ -155,9 +161,9 @@ class EnableTest extends TestCase
     public function moveModuleClassFile(): array
     {
         return [
-            'psr-0-move'     => ['psr-0', true,  ['%s/%s/Module.php' => '%s/%s/src/Module.php']],
+            'psr-0-move'     => ['psr-0', true, ['%s/%s/Module.php' => '%s/%s/src/Module.php']],
             'psr-0-not-move' => ['psr-0', false, null],
-            'psr-4-move'     => ['psr-4', true,  ['%s/%s/Module.php' => '%s/%s/src/Module.php']],
+            'psr-4-move'     => ['psr-4', true, ['%s/%s/Module.php' => '%s/%s/src/Module.php']],
             'psr-4-not-move' => ['psr-4', false, null],
         ];
     }
@@ -169,7 +175,7 @@ class EnableTest extends TestCase
     {
         $this->setUpModule($this->modulesDir, 'BarApp', $type);
         $this->setUpComposerJson($this->dir, []);
-        $moduleFile = $this->setUpModuleClassFile($this->modulesDir, 'BarApp');
+        $moduleFile    = $this->setUpModuleClassFile($this->modulesDir, 'BarApp');
         $newModuleFile = vfsStream::newFile('Module.php')
             ->withContent('foo bar content')
             ->at($this->modulesDir->getChild('BarApp')->getChild('src'));
@@ -187,12 +193,11 @@ class EnableTest extends TestCase
 
     /**
      * @dataProvider moveModuleClassFile
-     *
      * @psalm-param null|array<string-string> $expected
      */
     public function testMovesModuleClassFile(string $type, bool $move, ?array $expected): void
     {
-        $expectedModuleFileContent = <<< 'EOM'
+        $expectedModuleFileContent = <<<'EOM'
             <?php
             
             namespace %s;
@@ -219,7 +224,7 @@ class EnableTest extends TestCase
             $this->assertFileExists($moduleFile->url());
         } else {
             $from = sprintf(key($expected), $this->modulesDir->url(), 'FooApp');
-            $to = sprintf(reset($expected), $this->modulesDir->url(), 'FooApp');
+            $to   = sprintf(reset($expected), $this->modulesDir->url(), 'FooApp');
             $this->assertEquals([$from => $to], $this->command->getMovedModuleClass());
             $this->assertFileDoesNotExist($moduleFile->url());
             $newModuleFile = vfsStream::url('project/my-modules/FooApp/src/Module.php');

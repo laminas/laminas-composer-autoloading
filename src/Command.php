@@ -10,64 +10,62 @@ namespace Laminas\ComposerAutoloading;
 
 use Laminas\Stdlib\ConsoleHelper;
 
+use function array_pop;
+use function array_shift;
+use function array_values;
+use function count;
+use function in_array;
+use function is_dir;
+use function key;
+use function preg_replace;
+use function reset;
+use function sprintf;
+use function str_replace;
+
+use const STDERR;
+use const STDOUT;
+
 class Command
 {
-    const DEFAULT_COMMAND_NAME = 'laminas-composer-autoloading';
+    public const DEFAULT_COMMAND_NAME = 'laminas-composer-autoloading';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $projectDir = '.';
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $commands = [
         'disable' => Command\Disable::class,
-        'enable' => Command\Enable::class,
+        'enable'  => Command\Enable::class,
     ];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $helpArgs = ['--help', '-h', 'help'];
 
     /** @var string */
     private $command;
 
-    /**
-     * @var string Composer binary name/location
-     */
+    /** @var string Composer binary name/location */
     private $composer = 'composer';
 
     /** @var ConsoleHelper */
     private $console;
 
-    /**
-     * @var string One of psr-0 or psr-4
-     */
+    /** @var string One of psr-0 or psr-4 */
     private $type = '';
 
-    /**
-     * @var string Filesystem path to modules directory
-     */
+    /** @var string Filesystem path to modules directory */
     private $modulesPath = 'module';
 
-    /**
-     * @var string Module name
-     */
+    /** @var string Module name */
     private $module = '';
 
-    /**
-     * @var string Filesystem path to module
-     */
+    /** @var string Filesystem path to module */
     private $modulePath = '';
 
     /**
      * @param string $command
-     * @param null|ConsoleHelper $console
      */
-    public function __construct($command = self::DEFAULT_COMMAND_NAME, ConsoleHelper $console = null)
+    public function __construct($command = self::DEFAULT_COMMAND_NAME, ?ConsoleHelper $console = null)
     {
         $this->command = (string) $command;
         $this->console = $console ?: new ConsoleHelper();
@@ -108,7 +106,7 @@ class Command
         try {
             if ($instance->process($this->module, $this->type)) {
                 if ($isEnableCommand && ($movedModuleClass = $instance->getMovedModuleClass())) {
-                    $src = key($movedModuleClass);
+                    $src  = key($movedModuleClass);
                     $dest = reset($movedModuleClass);
 
                     $this->console->writeLine(sprintf('Renaming %s to %s', $src, $dest));
@@ -224,7 +222,7 @@ class Command
         }
 
         // Parse arguments
-        $args = array_values($args);
+        $args  = array_values($args);
         $count = count($args);
 
         if (0 !== $count % 2) {
@@ -279,8 +277,9 @@ class Command
      */
     private function checkArguments()
     {
-        $output = [];
+        $output    = [];
         $returnVar = null;
+        // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName
         exec(sprintf('%s 2>&1', $this->composer), $output, $returnVar);
 
         if ($returnVar !== 0) {

@@ -8,6 +8,8 @@
 
 namespace Laminas\ComposerAutoloading\Exception;
 
-class InvalidArgumentException extends \RuntimeException
+use RuntimeException;
+
+class InvalidArgumentException extends RuntimeException
 {
 }

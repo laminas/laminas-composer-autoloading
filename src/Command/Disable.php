@@ -26,8 +26,8 @@ class Disable extends AbstractCommand
         }
 
         $composerPackage = $this->composerPackage;
-        $type = $this->type;
-        $module = $this->moduleName;
+        $type            = $this->type;
+        $module          = $this->moduleName;
 
         unset($composerPackage['autoload'][$type][$module . '\\']);
         if (! $composerPackage['autoload'][$type]) {
