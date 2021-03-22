@@ -20,19 +20,19 @@ trait ProjectSetupTrait
 
     /** @var string */
     private $moduleFileContent = <<< 'EOM'
-<?php
-
-namespace %s;
-
-class Module
-{
-    public function getConfigDir()
-    {
-        return __DIR__ . '/config/';
-    }
-}
-
-EOM;
+        <?php
+        
+        namespace %s;
+        
+        class Module
+        {
+            public function getConfigDir()
+            {
+                return __DIR__ . '/config/';
+            }
+        }
+        
+        EOM;
 
     /** @var string */
     private $composer = 'my-composer.phar';
