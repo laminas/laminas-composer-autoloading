@@ -6,10 +6,14 @@
  * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\ComposerAutoloading\Exception;
+declare(strict_types=1);
 
-use RuntimeException;
+namespace Laminas\ComposerAutoloading;
 
-class InvalidArgumentException extends RuntimeException
+interface MoveModuleClassFileInterface
 {
+    /**
+     * @psalm-param callable(string $originalFile, string $newFile):void $reporter
+     */
+    public function __invoke(string $modulePath, callable $reporter): void;
 }

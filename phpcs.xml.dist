@@ -12,7 +12,6 @@
     <arg value="p"/>
 
     <!-- Paths to check -->
-    <file>bin</file>
     <file>src</file>
     <file>test</file>
 

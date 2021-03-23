@@ -8,160 +8,193 @@
 
 namespace LaminasTest\ComposerAutoloading\Command;
 
-use Laminas\ComposerAutoloading\Command;
-use Laminas\ComposerAutoloading\Exception;
-use LaminasTest\ComposerAutoloading\ProjectSetupTrait;
+use InvalidArgumentException;
+use Laminas\ComposerAutoloading\AutoloadDumpInterface;
+use Laminas\ComposerAutoloading\FileReaderInterface;
+use Laminas\ComposerAutoloading\FileWriterInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
+use RuntimeException;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-use function file_get_contents;
-
-class AbstractCommandTest extends TestCase
+abstract class AbstractCommandTest extends TestCase
 {
-    use ProjectSetupTrait;
+    /**
+     * @var AutoloadDumpInterface|MockObject
+     * @psalm-var AutoloadDumpInterface&MockObject
+     */
+    protected $autoloadDumper;
+
+    /** @var Command */
+    protected $command;
 
     /** @var vfsStreamDirectory */
-    private $dir;
-
-    /** @var vfsStreamDirectory */
-    private $modulesDir;
+    protected $dir;
 
     /**
-     * @var Command\AbstractCommand|MockObject
-     * @psalm-var Command\AbstractCommand&MockObject
+     * @var FileReaderInterface|MockObject
+     * @psalm-var FileReaderInterface&MockObject
      */
-    private $command;
+    protected $fileReader;
+
+    /**
+     * @var FileWriterInterface|MockObject
+     * @psalm-var FileWriterInterface&MockObject
+     */
+    protected $fileWriter;
+
+    /**
+     * @var InputInterface|MockObject
+     * @psalm-var InputInterface&MockObject
+     */
+    protected $input;
+
+    /** @var vfsStreamDirectory */
+    protected $modulesDir;
+
+    /**
+     * @var OutputInterface|MockObject
+     * @psalm-var OutputInterface&MockObject
+     */
+    protected $output;
 
     protected function setUp(): void
     {
-        parent::setUp();
+        $this->dir = vfsStream::setup('root', null, [
+            'config' => [
+                'config.php' => '<?php return [];',
+            ],
+            'module' => [],
+        ]);
 
-        $this->dir        = vfsStream::setup('project');
-        $this->modulesDir = vfsStream::newDirectory('module')->at($this->dir);
+        $this->modulesDir     = $this->dir->getChild('module');
+        $this->input          = $this->createMock(InputInterface::class);
+        $this->output         = $this->createMock(OutputInterface::class);
+        $this->fileReader     = $this->createMock(FileReaderInterface::class);
+        $this->fileWriter     = $this->createMock(FileWriterInterface::class);
+        $this->autoloadDumper = $this->createMock(AutoloadDumpInterface::class);
+    }
 
-        $this->command = $this->getMockBuilder(Command\AbstractCommand::class)
-            ->setMethods(['execute'])
-            ->setConstructorArgs([$this->dir->url(), 'module', $this->composer])
-            ->enableOriginalConstructor()
-            ->enableProxyingToOriginalMethods()
-            ->getMockForAbstractClass();
+    public function prepareReader(string $filename, string $jsonToReturn): void
+    {
+        $this->fileReader
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with($filename)
+            ->willReturn($jsonToReturn);
     }
 
     /**
-     * @psalm-return array<string, array{0: string}>
+     * @return mixed
      */
-    public function type(): array
+    public function executeCommand(Command $command)
     {
-        return [
-            'psr-0' => ['psr-0'],
-            'psr-4' => ['psr-4'],
-        ];
+        $r = new ReflectionMethod($command, 'execute');
+        $r->setAccessible(true);
+        return $r->invoke($command, $this->input, $this->output);
     }
 
     /**
-     * @dataProvider type
+     * @psalm-return iterable<string, array{
+     *     0: string,
+     *     1: string,
+     *     2: string,
+     *     3: string,
+     *     4: non-empty-string,
+     * }>
      */
-    public function testThrowsExceptionWhenComposerJsonDoesNotExist(string $type): void
+    public function invalidCommandLines(): iterable
     {
-        $this->command->expects($this->never())->method('execute');
-        $this->setUpModule($this->modulesDir, 'App', $type);
-
-        $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('composer.json file does not exist');
-        $this->command->process('App', $type);
+        // phpcs:disable Generic.Files.LineLength.TooLong
+        yield 'empty module name'          => ['', 'composer.phar', vfsStream::url('root/'), 'module', '<module>'];
+        yield 'empty composer path'        => ['NewModule', '', vfsStream::url('root/'), 'module', '--composer'];
+        yield 'non-directory project path' => ['NewModule', 'composer.phar', 'not-a-directory', 'module', '--project-path'];
+        yield 'empty modules path'         => ['NewModule', 'composer.phar', vfsStream::url('root/'), '', '--modules-path'];
+        // phpcs:enable
     }
 
     /**
-     * @dataProvider type
+     * @dataProvider invalidCommandLines
+     * @psalm-param non-empty-string $expectedMessage
      */
-    public function testThrowsExceptionWhenComposerJsonIsNotWritable(string $type): void
-    {
-        $this->command->expects($this->never())->method('execute');
-        $this->setUpModule($this->modulesDir, 'App', $type);
-        vfsStream::newFile('composer.json', 0444)->at($this->dir);
-
-        $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('composer.json file is not writable');
-        $this->command->process('App', $type);
-    }
-
-    /**
-     * @dataProvider type
-     */
-    public function testThrowsExceptionWhenComposerJsonHasInvalidContent(string $type): void
-    {
-        $this->command->expects($this->never())->method('execute');
-        $this->setUpModule($this->modulesDir, 'App', $type);
-        vfsStream::newFile('composer.json')
-            ->withContent('invalid content')
-            ->at($this->dir);
-
-        $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('Error parsing composer.json file');
-        $this->command->process('App', $type);
-    }
-
-    /**
-     * @dataProvider type
-     */
-    public function testThrowsExceptionWhenComposerJsonHasNoContent(string $type): void
-    {
-        $this->command->expects($this->never())->method('execute');
-        $this->setUpModule($this->modulesDir, 'App', $type);
-        $this->setUpComposerJson($this->dir);
-
-        $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('The composer.json file was empty');
-        $this->command->process('App', $type);
-    }
-
-    public function testThrowsExceptionWhenCannotDetermineModuleType(): void
-    {
-        $this->command->expects($this->never())->method('execute');
-        vfsStream::newDirectory('App')->at($this->modulesDir);
-        $this->setUpComposerJson($this->dir, []);
-
-        $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('Unable to determine autoloading type; no src directory found in module');
-        $this->command->process('App');
-    }
-
-    /**
-     * @dataProvider type
-     */
-    public function testComposerJsonContentIsNotChangedAndDumpAutoloadIsNotCalledWhenExecuteMethodReturnsFalse(
-        string $type
+    public function testRaisesAssertionExceptionWhenOptionsOrArgumentsAreInvalid(
+        string $module,
+        string $composerPath,
+        string $projectPath,
+        string $modulePath,
+        string $expectedMessage
     ): void {
-        $this->command->expects($this->once())->method('execute')->willReturn(false);
-        $this->setUpModule($this->modulesDir, 'App', $type);
-        $composerJson = $this->setUpComposerJson($this->dir, ['foo' => 'bar']);
+        $this->input->expects($this->once())->method('getArgument')->with('modulename')->willReturn($module);
+        $this->input
+            ->expects($this->exactly(3))
+            ->method('getOption')
+            ->withConsecutive(
+                ['composer'],
+                ['project-path'],
+                ['modules-path']
+            )
+            ->willReturnOnConsecutiveCalls(
+                $composerPath,
+                $projectPath,
+                $modulePath
+            );
 
-        $this->assertNotComposerDumpAutoload();
-        $this->assertFalse($this->command->process('App', $type));
-        $this->assertEquals('{"foo":"bar"}', file_get_contents($composerJson->url()));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedMessage);
+        $this->executeCommand($this->command);
     }
 
-    /**
-     * @dataProvider type
-     */
-    public function testComposerJsonContentIsUpdatedAndDumpAutoloadIsCalledWhenExecuteMethodReturnsNewContent(
-        string $type
-    ): void {
-        $expectedComposerJson = <<<'EOC'
-            {
-                "new": "content"
-            }
-            
-            EOC;
+    public function testRaisesAssertionWhenModuleDirectoryHasUnrecognizedStructure(): void
+    {
+        vfsStream::newDirectory('NewModule')->at($this->modulesDir);
+        $this->input->expects($this->once())->method('getArgument')->with('modulename')->willReturn('NewModule');
+        $this->input
+            ->expects($this->exactly(4))
+            ->method('getOption')
+            ->withConsecutive(
+                ['composer'],
+                ['project-path'],
+                ['modules-path'],
+                ['type']
+            )
+            ->willReturnOnConsecutiveCalls(
+                'composer.phar',
+                vfsStream::url('root/'),
+                'module',
+                null
+            );
 
-        $this->command->expects($this->once())->method('execute')->willReturn(['new' => 'content']);
-        $this->setUpModule($this->modulesDir, 'App', $type);
-        $composerJson = $this->setUpComposerJson($this->dir, ['foo' => 'bar']);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unable to determine autoloading type');
+        $this->executeCommand($this->command);
+    }
 
-        $this->assertComposerDumpAutoload();
-        $this->assertTrue($this->command->process('App', $type));
-        $this->assertEquals($expectedComposerJson, file_get_contents($composerJson->url()));
+    public function testRaisesAssertionWhenUnableProvideWithInvalidType(): void
+    {
+        $this->input->expects($this->once())->method('getArgument')->with('modulename')->willReturn('NewModule');
+        $this->input
+            ->expects($this->exactly(4))
+            ->method('getOption')
+            ->withConsecutive(
+                ['composer'],
+                ['project-path'],
+                ['modules-path'],
+                ['type']
+            )
+            ->willReturnOnConsecutiveCalls(
+                'composer.phar',
+                vfsStream::url('root'),
+                'module',
+                'not-a-valid-autoloader-type'
+            );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('--type');
+        $this->executeCommand($this->command);
     }
 }

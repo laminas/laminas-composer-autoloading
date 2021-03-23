@@ -2,6 +2,7 @@
 /.phpunit.result.cache
 /.psalm-cache/
 /clover.xml
+/config/
 /coveralls-upload.json
 /phpunit.xml
 /vendor/
