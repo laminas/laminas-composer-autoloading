@@ -20,19 +20,20 @@
         "sort-packages": true
     },
     "extra": {
+        "laminas": {
+            "component": "Laminas\\ComposerAutoloading",
+            "config-provider": "Laminas\\ComposerAutoloading\\ConfigProvider"
+        }
     },
     "require": {
         "php": "^7.3 || ~8.0.0",
-        "laminas/laminas-stdlib": "^3.1",
-        "laminas/laminas-zendframework-bridge": "^1.0"
+        "laminas/laminas-cli": "^1.0",
+        "webmozart/assert": "^1.10"
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "~2.1.4",
         "mikey179/vfsstream": "^1.6.7",
-        "mockery/mockery": "^1.4.1",
-        "php-mock/php-mock-phpunit": "^2.0",
         "phpunit/phpunit": "^9.3",
-        "psalm/plugin-mockery": "^0.7.0",
         "psalm/plugin-phpunit": "^0.15.1",
         "vimeo/psalm": "^4.6"
     },
@@ -46,9 +47,6 @@
             "LaminasTest\\ComposerAutoloading\\": "test/"
         }
     },
-    "bin": [
-        "bin/laminas-composer-autoloading"
-    ],
     "scripts": {
         "check": [
             "@cs-check",
@@ -58,8 +56,5 @@
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
-    },
-    "replace": {
-        "zfcampus/zf-composer-autoloading": "^2.1.0"
     }
 }

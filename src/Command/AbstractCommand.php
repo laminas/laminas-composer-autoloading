@@ -6,184 +6,141 @@
  * @license   https://github.com/laminas/laminas-composer-autoloading/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Laminas\ComposerAutoloading\Command;
 
-use Laminas\ComposerAutoloading\Exception;
+use Laminas\ComposerAutoloading\AutoloadDumpInterface;
+use Laminas\ComposerAutoloading\Composer;
+use Laminas\ComposerAutoloading\Exception\RuntimeException;
+use Laminas\ComposerAutoloading\FileReaderInterface;
+use Laminas\ComposerAutoloading\FileWriterInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Webmozart\Assert\Assert;
 
-use function file_get_contents;
-use function file_put_contents;
-use function is_array;
+use function getcwd;
+use function implode;
 use function is_dir;
-use function is_readable;
-use function is_writable;
-use function json_decode;
-use function json_encode;
-use function json_last_error;
+use function realpath;
 use function sprintf;
 
-use const JSON_ERROR_NONE;
-use const JSON_PRETTY_PRINT;
-use const JSON_UNESCAPED_SLASHES;
-use const JSON_UNESCAPED_UNICODE;
-
-abstract class AbstractCommand
+abstract class AbstractCommand extends Command
 {
-    /** @var string */
-    protected $projectDir;
+    /** @var AutoloadDumpInterface */
+    protected $autoloadDumper;
 
-    /** @var string */
-    protected $modulePath = '';
+    /** @var FileReaderInterface */
+    protected $fileReader;
 
-    /** @var string */
-    protected $modulesPath;
+    /** @var FileWriterInterface */
+    protected $fileWriter;
 
-    /** @var string */
-    protected $composer;
-
-    /** @var string */
-    protected $composerJsonFile = '';
-
-    /**
-     * @var array
-     * @psalm-var array{autoload: array<string, array<string, string>|mixed>|mixed}
-     */
-    protected $composerPackage = [];
-
-    /** @var string */
-    protected $moduleName = '';
-
-    /** @var string */
-    protected $type = '';
-
-    /**
-     * @param string $projectDir
-     * @param string $modulesPath
-     * @param string $composer
-     */
-    public function __construct($projectDir, $modulesPath, $composer)
+    protected function prepareCommonCommandOptions(Command $command): void
     {
-        $this->projectDir  = $projectDir;
-        $this->modulesPath = $modulesPath;
-        $this->composer    = $composer;
-    }
+        $command->addOption(
+            'composer',
+            'c',
+            InputOption::VALUE_REQUIRED,
+            'Full path to the composer binary',
+            'composer'
+        );
 
-    /**
-     * @param string $moduleName
-     * @param null|string $type
-     * @return bool
-     * @throws Exception\RuntimeException
-     */
-    public function process($moduleName, $type = null)
-    {
-        $this->moduleName      = $moduleName;
-        $this->modulePath      = sprintf('%s/%s/%s', $this->projectDir, $this->modulesPath, $moduleName);
-        $this->type            = $type ?: $this->autodiscoverModuleType();
-        $this->composerPackage = $this->getComposerJson();
+        $command->addOption(
+            'type',
+            't',
+            InputOption::VALUE_REQUIRED,
+            'Autoloading type to use; one of psr-0 or psr-4'
+        );
 
-        $content = $this->execute();
+        $command->addOption(
+            'project-path',
+            'p',
+            InputOption::VALUE_REQUIRED,
+            'Path to project, if not current working directory',
+            realpath(getcwd())
+        );
 
-        if ($content !== false) {
-            $this->writeJsonFileAndDumpAutoloader($content);
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Validate that the composer.json exists, is writable, and contains valid contents.
-     *
-     * @return array{autoload: array<string, array<string, string>|mixed>|mixed}
-     * @throws Exception\RuntimeException
-     */
-    public function getComposerJson()
-    {
-        $this->composerJsonFile = sprintf('%s/composer.json', $this->projectDir);
-
-        if (! is_readable($this->composerJsonFile)) {
-            throw new Exception\RuntimeException('composer.json file does not exist or is not readable');
-        }
-        if (! is_writable($this->composerJsonFile)) {
-            throw new Exception\RuntimeException('composer.json file is not writable');
-        }
-
-        $composerJson    = file_get_contents($this->composerJsonFile);
-        $composerPackage = json_decode($composerJson, true);
-        if (! is_array($composerPackage)) {
-            $error = json_last_error();
-            $error = $error === JSON_ERROR_NONE
-                ? 'The composer.json file was empty'
-                : 'Error parsing composer.json file; please check that it is valid';
-            throw new Exception\RuntimeException($error);
-        }
-
-        return $composerPackage;
+        $command->addOption(
+            'modules-path',
+            'm',
+            InputOption::VALUE_REQUIRED,
+            'Path to the modules directory',
+            'module'
+        );
     }
 
     /**
      * Determine the autoloading type for the module.
      *
-     * If passed as a flag, uses that.
+     * Call this if the autoloading type was not passed as a flag.
      *
-     * Otherwise, introspects the module tree to determine if PSR-0 or PSR-4 is
-     * being used.
+     * Introspects the module tree to determine if PSR-0 or PSR-4 is being used.
      *
-     * If the module tree does not include a src/ directory, returns false,
-     * indicating inability to autodiscover.
-     *
-     * Sets the type property on successful discovery.
-     *
-     * @return string
-     * @throws Exception\RuntimeException
+     * @psalm-return Composer::AUTOLOADER_PSR*
+     * @throws RuntimeException If unable to autodetermine autoloader type.
      */
-    protected function autodiscoverModuleType()
-    {
-        $psr0Spec = sprintf('%s/src/%s', $this->modulePath, $this->moduleName);
+    protected function autodiscoverModuleType(
+        string $projectPath,
+        string $modulePath,
+        string $moduleName
+    ): string {
+        $basePath = sprintf('%s/%s/%s', $projectPath, $modulePath, $moduleName);
+        $psr0Spec = sprintf('%s/src/%s', $basePath, $moduleName);
         if (is_dir($psr0Spec)) {
-            return 'psr-0';
+            return Composer::AUTOLOADER_PSR0;
         }
 
-        $srcPath = sprintf('%s/src', $this->modulePath);
-        if (! is_dir($srcPath)) {
-            throw new Exception\RuntimeException(
-                'Unable to determine autoloading type; no src directory found in module'
-            );
+        $psr4Spec = sprintf('%s/src', $basePath);
+        if (is_dir($psr4Spec)) {
+            return Composer::AUTOLOADER_PSR4;
         }
 
-        return 'psr-4';
+        throw new RuntimeException(sprintf(
+            'Unable to determine autoloading type (looking in %s)',
+            $basePath
+        ));
     }
 
-    /**
-     * Do autoloading rules already exist for this module?
-     *
-     * @return bool
-     */
-    protected function autoloadingRulesExist()
+    protected function validateOptionsAndPrepareComposer(InputInterface $input): ValidatedOptions
     {
-        if (! isset($this->composerPackage['autoload'][$this->type][$this->moduleName . '\\'])) {
-            return false;
-        }
+        $module       = $input->getArgument('modulename');
+        $composerPath = $input->getOption('composer');
+        $projectPath  = $input->getOption('project-path');
+        $modulesPath  = $input->getOption('modules-path');
 
-        return true;
+        Assert::stringNotEmpty($module, 'A non-empty string is required for the <module> name');
+        Assert::stringNotEmpty($composerPath, 'A non-empty string is required for the --composer executable');
+        Assert::stringNotEmpty($projectPath, '--project-path must be a directory');
+        Assert::directory($projectPath, '--project-path must be a directory');
+        Assert::stringNotEmpty($modulesPath, 'A non-empty string is required for the --modules-path');
+
+        $type = $input->getOption('type') ?: $this->autodiscoverModuleType(
+            $projectPath,
+            $modulesPath,
+            $module
+        );
+        Assert::oneOf(
+            $type,
+            Composer::AUTOLOADER_TYPES,
+            sprintf('--type must be one of [%s]', implode(', ', Composer::AUTOLOADER_TYPES))
+        );
+
+        $composer = new Composer(
+            $projectPath,
+            $this->fileReader,
+            $this->fileWriter,
+            $this->autoloadDumper
+        );
+
+        return new ValidatedOptions(
+            $module,
+            $composerPath,
+            $projectPath,
+            $modulesPath,
+            $type,
+            $composer
+        );
     }
-
-    /**
-     * @return void
-     */
-    protected function writeJsonFileAndDumpAutoloader(array $content)
-    {
-        file_put_contents($this->composerJsonFile, json_encode(
-            $content,
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-        ) . "\n");
-
-        $command = sprintf('%s dump-autoload', $this->composer);
-        // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName
-        system($command);
-    }
-
-    /**
-     * @return false|array{autoload: array<string, array<string, string>|mixed>|mixed}
-     */
-    abstract protected function execute();
 }
