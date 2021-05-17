@@ -1,7 +1,6 @@
 {
     "name": "laminas/laminas-composer-autoloading",
     "description": "Sets up Composer-based autoloading for your Laminas modules",
-    "license": "BSD-3-Clause",
     "keywords": [
         "laminas",
         "autoloading",
@@ -9,22 +8,7 @@
         "framework"
     ],
     "homepage": "https://laminas.dev",
-    "support": {
-        "issues": "https://github.com/laminas/laminas-composer-autoloading/issues",
-        "source": "https://github.com/laminas/laminas-composer-autoloading",
-        "rss": "https://github.com/laminas/laminas-composer-autoloading/releases.atom",
-        "chat": "https://laminas.dev/chat",
-        "forum": "https://discourse.laminas.dev"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "laminas": {
-            "component": "Laminas\\ComposerAutoloading",
-            "config-provider": "Laminas\\ComposerAutoloading\\ConfigProvider"
-        }
-    },
+    "license": "BSD-3-Clause",
     "require": {
         "php": "^7.3 || ~8.0.0",
         "laminas/laminas-cli": "^1.0",
@@ -36,6 +20,15 @@
         "phpunit/phpunit": "^9.3",
         "psalm/plugin-phpunit": "^0.15.1",
         "vimeo/psalm": "^4.6"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laminas": {
+            "component": "Laminas\\ComposerAutoloading",
+            "config-provider": "Laminas\\ComposerAutoloading\\ConfigProvider"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -56,5 +49,12 @@
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    },
+    "support": {
+        "issues": "https://github.com/laminas/laminas-composer-autoloading/issues",
+        "forum": "https://discourse.laminas.dev",
+        "chat": "https://laminas.dev/chat",
+        "source": "https://github.com/laminas/laminas-composer-autoloading",
+        "rss": "https://github.com/laminas/laminas-composer-autoloading/releases.atom"
     }
 }
