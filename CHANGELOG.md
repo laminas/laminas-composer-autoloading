@@ -2,27 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.1.0 - TBD
+## 3.1.0 - 2021-10-21
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [3.1.0](https://github.com/laminas/laminas-composer-autoloading/milestone/7)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 3.1.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **2**
+- Total contributors: **2**
 
-### Removed
+#### Enhancement
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [12: Add support for PHP 8.1](https://github.com/laminas/laminas-composer-autoloading/pull/12) thanks to @arueckauer
+ - [10: Remove file headers](https://github.com/laminas/laminas-composer-autoloading/pull/10) thanks to @ghostwriter
 
 ## 2.3.0 - TBD
 
