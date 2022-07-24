@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.6.4@97fe86c4e158b5a57c5150aa5055c38b5a809aab">
+<files psalm-version="4.24.0@06dd975cb55d36af80f242561738f16c5f58264f">
   <file src="src/Command/AbstractCommand.php">
-    <InvalidArgument occurrences="1">
+    <MixedArgument occurrences="1">
       <code>$type</code>
-    </InvalidArgument>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$type</code>
+    </MixedAssignment>
   </file>
   <file src="src/Composer.php">
     <MixedArrayAccess occurrences="1">
