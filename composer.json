@@ -19,7 +19,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "7.3.99"
+            "php": "7.4.99"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
@@ -32,8 +32,8 @@
         }
     },
     "require": {
-        "php": "^7.3 || ~8.0.0 || ~8.1.0",
-        "laminas/laminas-cli": "^1.0",
+        "php": "^7.4 || ~8.0.0 || ~8.1.0",
+        "laminas/laminas-cli": "^1.4.0",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
