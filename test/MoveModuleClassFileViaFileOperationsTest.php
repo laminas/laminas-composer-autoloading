@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ComposerAutoloading;
 
 use Laminas\ComposerAutoloading\MoveModuleClassFileViaFileOperations;
@@ -35,7 +37,7 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
      */
     private function createNoopReporter(): callable
     {
-        return function (string $original, string $target): void {
+        return function (): void {
             Assert::fail('Reporter was reached, but should not have been');
         };
     }

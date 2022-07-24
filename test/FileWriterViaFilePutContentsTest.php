@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\ComposerAutoloading;
 
 use Laminas\ComposerAutoloading\Exception\ComposerJsonFileException;
