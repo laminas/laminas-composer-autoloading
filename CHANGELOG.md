@@ -2,27 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.2.0 - TBD
+## 3.2.0 - 2022-07-24
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [3.2.0](https://github.com/laminas/laminas-composer-autoloading/milestone/10)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 3.2.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **2**
+- Total contributors: **2**
 
-### Removed
+#### renovate
 
-- Nothing.
+ - [14: Configure Renovate](https://github.com/laminas/laminas-composer-autoloading/pull/14) thanks to @renovate[bot]
 
-### Fixed
+#### Enhancement
 
-- Nothing.
+ - [13: Prepare for Renovate with reusable workflows](https://github.com/laminas/laminas-composer-autoloading/pull/13) thanks to @ghostwriter
 
 ## 3.1.0 - 2021-10-21
 
