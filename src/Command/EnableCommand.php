@@ -26,8 +26,7 @@ final class EnableCommand extends AbstractCommand
     /** @var null|string */
     protected static $defaultName = 'composer:autoload:enable';
 
-    /** @var MoveModuleClassFileInterface */
-    private $moduleFileMover;
+    private MoveModuleClassFileInterface $moduleFileMover;
 
     public function __construct(
         FileReaderInterface $fileReader,
@@ -72,7 +71,7 @@ final class EnableCommand extends AbstractCommand
         $resolvedModulesPath = sprintf('%s/%s', rtrim($options->projectPath, '\\/'), $options->modulesPath);
         $this->moduleFileMover->__invoke(
             $resolvedModulesPath,
-            function (string $original, string $target) use ($output): void {
+            static function (string $original, string $target) use ($output): void {
                 $output->writeln(sprintf(
                     '<info>Renamed %s to %s</info>',
                     $original,

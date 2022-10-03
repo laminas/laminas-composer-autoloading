@@ -15,8 +15,7 @@ use function sprintf;
 
 class MoveModuleClassFileViaFileOperationsTest extends TestCase
 {
-    /** @var vfsStreamDirectory */
-    private $dir;
+    private vfsStreamDirectory $dir;
 
     public function setUp(): void
     {
@@ -37,7 +36,7 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
      */
     private function createNoopReporter(): callable
     {
-        return function (): void {
+        return static function (): void {
             Assert::fail('Reporter was reached, but should not have been');
         };
     }
@@ -47,7 +46,7 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
      */
     private function createSpyReporter(string $expectedOriginal, string $expectedTarget): callable
     {
-        return function (string $original, string $target) use ($expectedOriginal, $expectedTarget): void {
+        return static function (string $original, string $target) use ($expectedOriginal, $expectedTarget): void {
             Assert::assertSame($expectedOriginal, $original, sprintf(
                 'Did not receive expected original file "%s"; received "%s"',
                 $expectedOriginal,
@@ -86,7 +85,7 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
         $modulePath = $this->dir->getChild('module/TestModule');
         vfsStream::newFile('Module.php')->at($modulePath)->setContent(<<<'END'
             <?php
-            
+
             namespace TestModule;
 
             class Module
@@ -108,7 +107,7 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
         $modulePath              = $this->dir->getChild('module/TestModule');
         $moduleClassFileContents = <<<'END'
             <?php
-            
+
             namespace TestModule;
 
             class Module
@@ -143,7 +142,7 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
         $modulePath              = $this->dir->getChild('module/TestModule');
         $moduleClassFileContents = <<<'END'
             <?php
-            
+
             namespace TestModule;
 
             class Module
@@ -160,7 +159,7 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
 
         $expectedModuleClassFileContents = <<<'END'
             <?php
-            
+
             namespace TestModule;
 
             class Module

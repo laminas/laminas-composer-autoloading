@@ -12,8 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileReaderViaFileGetContentsTest extends TestCase
 {
-    /** @var vfsStreamDirectory */
-    private $dir;
+    private vfsStreamDirectory $dir;
 
     public function setUp(): void
     {
