@@ -14,8 +14,7 @@ use function file_get_contents;
 
 class FileWriterViaFilePutContentsTest extends TestCase
 {
-    /** @var vfsStreamDirectory */
-    private $dir;
+    private vfsStreamDirectory $dir;
 
     public function setUp(): void
     {

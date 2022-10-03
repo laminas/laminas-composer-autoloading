@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Laminas\ComposerAutoloading;
 
 use JsonException;
+use Laminas\ComposerAutoloading\AutoloadDumpInterface;
+use Laminas\ComposerAutoloading\FileWriterInterface;
 use Webmozart\Assert\Assert;
 
 use function implode;
@@ -30,23 +32,16 @@ final class Composer
 
     private const COMPOSER_FILE = 'composer.json';
 
-    /** @var AutoloadDumpInterface */
-    private $autoloadDumper;
+    private AutoloadDumpInterface $autoloadDumper;
 
-    /** @var bool */
-    private $changed = false;
+    private bool $changed = false;
 
-    /**
-     * @var array
-     * @psalm-var array<string, mixed>
-     */
-    private $composer;
+    /** @psalm-var array<string, mixed> */
+    private array $composer;
 
-    /** @var FileWriterInterface */
-    private $fileWriter;
+    private FileWriterInterface $fileWriter;
 
-    /** @var string */
-    private $composerJsonFile;
+    private string $composerJsonFile;
 
     public function __construct(
         string $projectDir,

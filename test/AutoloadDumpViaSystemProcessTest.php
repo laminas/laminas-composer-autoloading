@@ -18,7 +18,7 @@ class AutoloadDumpViaSystemProcessTest extends TestCase
         $dumper       = new AutoloadDumpViaSystemProcess();
 
         /** @psalm-suppress InternalProperty */
-        $dumper->systemCommand = function (string $command) use ($composerPath): void {
+        $dumper->systemCommand = static function (string $command) use ($composerPath): void {
             $expected = sprintf('%s dump-autoload', $composerPath);
             Assert::assertSame($expected, $command);
         };
