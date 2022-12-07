@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.4.0 - TBD
+## 3.4.0 - 2022-12-07
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [3.4.0](https://github.com/laminas/laminas-composer-autoloading/milestone/14)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 3.4.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Enhancement
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [18: Update dependency php to ^7.4 || ~8.0.0 || ~8.1.0 || ~8.2.0](https://github.com/laminas/laminas-composer-autoloading/pull/18) thanks to @renovate[bot]
 
 ## 3.3.0 - 2022-10-03
 
