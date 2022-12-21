@@ -32,11 +32,11 @@ class MoveModuleClassFileViaFileOperationsTest extends TestCase
     }
 
     /**
-     * @psalm-return callable(string $originalFile, string $newFile):void
+     * @psalm-return callable(string $originalFile, string $newFile):never
      */
     private function createNoopReporter(): callable
     {
-        return static function (): void {
+        return static function () {
             Assert::fail('Reporter was reached, but should not have been');
         };
     }
