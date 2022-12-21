@@ -36,7 +36,7 @@ final class ComposerJsonFileException extends RuntimeException
             $composerJsonFile,
             $composerJson,
             $previousException->getMessage()
-        ), (int) $previousException->getCode(), $previousException);
+        ), $previousException->getCode(), $previousException);
     }
 
     public static function forUnserializableContents(JsonException $previousException): self
@@ -44,7 +44,7 @@ final class ComposerJsonFileException extends RuntimeException
         return new self(sprintf(
             'Unable to serialize composer.json contents to JSON: %s',
             $previousException->getMessage()
-        ), (int) $previousException->getCode(), $previousException);
+        ), $previousException->getCode(), $previousException);
     }
 
     public static function forUnwriteableFile(string $composerJsonFile): self
