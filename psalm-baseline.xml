@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.24.0@06dd975cb55d36af80f242561738f16c5f58264f">
+<files psalm-version="5.2.0@fb685a16df3050d4c18d8a4100fe83abe6458cba">
   <file src="src/Command/AbstractCommand.php">
     <MixedArgument occurrences="1">
       <code>$type</code>
@@ -8,46 +8,9 @@
       <code>$type</code>
     </MixedAssignment>
   </file>
-  <file src="src/Composer.php">
-    <MixedArrayAccess occurrences="1">
-      <code>$this-&gt;composer['autoload'][$type]</code>
-    </MixedArrayAccess>
-    <MixedArrayAssignment occurrences="2">
-      <code>$this-&gt;composer['autoload'][$type]</code>
-      <code>$this-&gt;composer['autoload'][$type]</code>
-    </MixedArrayAssignment>
-    <MixedInferredReturnType occurrences="1">
-      <code>array&lt;string, mixed&gt;</code>
-    </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="1">
-      <code>json_decode($json, true, 512, JSON_THROW_ON_ERROR)</code>
-    </MixedReturnStatement>
-  </file>
   <file src="test/Command/AbstractCommandTest.php">
     <PropertyTypeCoercion occurrences="1">
       <code>$this-&gt;dir-&gt;getChild('module')</code>
     </PropertyTypeCoercion>
-  </file>
-  <file src="test/ComposerTest.php">
-    <MixedArgument occurrences="7">
-      <code>$definition</code>
-      <code>$definition</code>
-      <code>$definition['autoload']</code>
-      <code>$definition['autoload']</code>
-      <code>$definition['autoload'][$type]</code>
-      <code>$definition['autoload'][$type]</code>
-      <code>$definition['autoload'][$type][$expectedKey]</code>
-    </MixedArgument>
-    <MixedArrayAccess occurrences="5">
-      <code>$definition['autoload']</code>
-      <code>$definition['autoload']</code>
-      <code>$definition['autoload']</code>
-      <code>$definition['autoload']</code>
-      <code>$definition['autoload'][$type]</code>
-    </MixedArrayAccess>
-    <MixedAssignment occurrences="2">
-      <code>$definition</code>
-      <code>$definition</code>
-    </MixedAssignment>
   </file>
 </files>
