@@ -33,15 +33,16 @@
     },
     "require": {
         "php": "^7.4 || ~8.0.0 || ~8.1.0 || ~8.2.0",
+        "ext-json": "*",
         "laminas/laminas-cli": "^1.4.0",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "~2.4.0",
         "mikey179/vfsstream": "^1.6.11",
-        "phpunit/phpunit": "^9.5.26",
-        "psalm/plugin-phpunit": "^0.18.0",
-        "vimeo/psalm": "^4.29.0"
+        "phpunit/phpunit": "^9.5.27",
+        "psalm/plugin-phpunit": "^0.18.4",
+        "vimeo/psalm": "^5.4"
     },
     "autoload": {
         "psr-4": {
