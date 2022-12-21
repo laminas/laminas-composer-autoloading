@@ -21,6 +21,14 @@ use const JSON_THROW_ON_ERROR;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
+/**
+ * @psalm-type ComposerFile = array{
+ *     autoload: array{
+ *         psr-0?: array<string, string>,
+ *         psr-4?: array<string, string>,
+ *     },
+ * }
+ */
 final class Composer
 {
     public const AUTOLOADER_PSR0  = 'psr-0';
@@ -36,7 +44,7 @@ final class Composer
 
     private bool $changed = false;
 
-    /** @psalm-var array<string, mixed> */
+    /** @psalm-var ComposerFile */
     private array $composer;
 
     private FileWriterInterface $fileWriter;
@@ -54,6 +62,7 @@ final class Composer
 
         $composerJsonFileContents = $fileReader($composerJsonFile);
 
+        /** @psalm-var ComposerFile $composer */
         $composer = $this->deserializeJson($composerJsonFileContents, $composerJsonFile);
 
         $this->autoloadDumper   = $autoloadDumper;
@@ -134,6 +143,7 @@ final class Composer
     private function deserializeJson(string $json, string $filename): array
     {
         try {
+            /** @psalm-var array<string, mixed> */
             return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw Exception\ComposerJsonFileException::forUnparseableFile($filename, $json, $e);

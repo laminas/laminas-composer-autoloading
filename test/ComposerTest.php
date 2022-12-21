@@ -15,6 +15,7 @@ use ReflectionProperty;
 use function array_key_exists;
 use function sprintf;
 
+/** @psalm-import-type ComposerFile from Composer */
 class ComposerTest extends TestCase
 {
     /**
@@ -58,6 +59,7 @@ class ComposerTest extends TestCase
         $r = new ReflectionProperty($composer, 'composer');
         $r->setAccessible(true);
 
+        /** @var ComposerFile $definition */
         $definition = $r->getValue($composer);
 
         $this->assertArrayHasKey('autoload', $definition, sprintf(
@@ -95,6 +97,7 @@ class ComposerTest extends TestCase
         $r = new ReflectionProperty($composer, 'composer');
         $r->setAccessible(true);
 
+        /** @var ComposerFile $definition */
         $definition = $r->getValue($composer);
 
         if (! array_key_exists('autoload', $definition)) {
