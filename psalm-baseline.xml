@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.2.0@fb685a16df3050d4c18d8a4100fe83abe6458cba">
+<files psalm-version="5.16.0@2897ba636551a8cb61601cc26f6ccfbba6c36591">
   <file src="src/Command/AbstractCommand.php">
-    <MixedArgument occurrences="1">
+    <MixedArgument>
       <code>$type</code>
     </MixedArgument>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$type</code>
     </MixedAssignment>
   </file>
   <file src="test/Command/AbstractCommandTest.php">
-    <PropertyTypeCoercion occurrences="1">
-      <code>$this-&gt;dir-&gt;getChild('module')</code>
+    <DeprecatedMethod>
+      <code>withConsecutive</code>
+      <code>withConsecutive</code>
+      <code>withConsecutive</code>
+    </DeprecatedMethod>
+    <PropertyTypeCoercion>
+      <code><![CDATA[$this->dir->getChild('module')]]></code>
     </PropertyTypeCoercion>
+  </file>
+  <file src="test/Command/DisableCommandTest.php">
+    <DeprecatedMethod>
+      <code>withConsecutive</code>
+      <code>withConsecutive</code>
+      <code>withConsecutive</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="test/Command/EnableCommandTest.php">
+    <DeprecatedMethod>
+      <code>withConsecutive</code>
+      <code>withConsecutive</code>
+      <code>withConsecutive</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="test/ComposerTest.php">
+    <PossiblyUnusedParam>
+      <code>$pathToModules</code>
+    </PossiblyUnusedParam>
   </file>
 </files>

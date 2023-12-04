@@ -91,7 +91,6 @@ abstract class AbstractCommandTest extends TestCase
     public function executeCommand(Command $command)
     {
         $r = new ReflectionMethod($command, 'execute');
-        $r->setAccessible(true);
         return $r->invoke($command, $this->input, $this->output);
     }
 
