@@ -46,7 +46,6 @@ class ComposerTest extends TestCase
     private function assertComposerUnchanged(Composer $composer): void
     {
         $r = new ReflectionProperty($composer, 'changed');
-        $r->setAccessible(true);
         $this->assertFalse($r->getValue($composer), 'composer.json has changed, but was not expected to.');
     }
 
@@ -57,7 +56,6 @@ class ComposerTest extends TestCase
         Composer $composer
     ): void {
         $r = new ReflectionProperty($composer, 'composer');
-        $r->setAccessible(true);
 
         /** @var ComposerFile $definition */
         $definition = $r->getValue($composer);
@@ -95,7 +93,6 @@ class ComposerTest extends TestCase
         Composer $composer
     ): void {
         $r = new ReflectionProperty($composer, 'composer');
-        $r->setAccessible(true);
 
         /** @var ComposerFile $definition */
         $definition = $r->getValue($composer);
@@ -109,7 +106,7 @@ class ComposerTest extends TestCase
         }
 
         $this->assertArrayNotHasKey($moduleKey, $definition['autoload'][$type], sprintf(
-            '%s autoload dfinition for module %s found, but should not have been',
+            '%s autoload definition for module %s found, but should not have been',
             $type,
             $moduleKey
         ));
@@ -141,7 +138,7 @@ class ComposerTest extends TestCase
 
         $composer = new Composer('.', $this->fileReader, $this->fileWriter, $this->autoloadDumper);
 
-        $this->assertNull($composer->addAutoloaderEntry('psr-4', 'ModuleName', 'module'));
+        $composer->addAutoloaderEntry('psr-4', 'ModuleName', 'module');
         $this->assertComposerUnchanged($composer);
     }
 
@@ -181,7 +178,7 @@ class ComposerTest extends TestCase
 
         $composer = new Composer('.', $this->fileReader, $this->fileWriter, $this->autoloadDumper);
 
-        $this->assertNull($composer->addAutoloaderEntry($type, $moduleName, $modulePath));
+        $composer->addAutoloaderEntry($type, $moduleName, $modulePath);
         $this->assertAutoloadEntryExists($expectedKey, $expectedPath, $type, $composer);
     }
 
@@ -190,7 +187,7 @@ class ComposerTest extends TestCase
         $this->prepareReader('./composer.json', '{}');
         $composer = new Composer('.', $this->fileReader, $this->fileWriter, $this->autoloadDumper);
 
-        $this->assertNull($composer->removeAutoloaderEntry('psr-4', 'ModuleName'));
+        $composer->removeAutoloaderEntry('psr-4', 'ModuleName');
         $this->assertComposerUnchanged($composer);
     }
 
@@ -224,7 +221,7 @@ class ComposerTest extends TestCase
 
         $composer = new Composer('.', $this->fileReader, $this->fileWriter, $this->autoloadDumper);
 
-        $this->assertNull($composer->removeAutoloaderEntry($type, $moduleName));
+        $composer->removeAutoloaderEntry($type, $moduleName);
         $this->assertNotAutoloadEntryExists($moduleKey, $type, $composer);
     }
 
@@ -251,7 +248,7 @@ class ComposerTest extends TestCase
 
         $composer = new Composer('.', $this->fileReader, $this->fileWriter, $this->autoloadDumper);
 
-        $this->assertNull($composer->updatePackageAndDumpAutoloader('composer'));
+        $composer->updatePackageAndDumpAutoloader('composer');
     }
 
     public function testUpdatePackageAndDumpAutoloaderDoesWorkWhenDefinitionHasChanges(): void
@@ -296,6 +293,6 @@ class ComposerTest extends TestCase
             ->method('__invoke')
             ->with('composer.phar');
 
-        $this->assertNull($composer->updatePackageAndDumpAutoloader('composer.phar'));
+        $composer->updatePackageAndDumpAutoloader('composer.phar');
     }
 }

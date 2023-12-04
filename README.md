@@ -1,7 +1,8 @@
-laminas-composer-autoloading
-=======================
+# laminas-composer-autoloading
 
-[![Build Status](https://github.com/laminas/laminas-composer-autoloading/workflows/Continuous%20Integration/badge.svg)](https://github.com/laminas/laminas-composer-autoloading/actions?query=workflow%3A"Continuous+Integration")
+[![Build Status](https://github.com/laminas/laminas-composer-autoloading/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/laminas/laminas-composer-autoloading/actions/workflows/continuous-integration.yml)
+[![type-coverage](https://shepherd.dev/github/laminas/laminas-composer-autoloading/coverage.svg)](https://shepherd.dev/github/laminas/laminas-composer-autoloading)
+[![Psalm level](https://shepherd.dev/github/laminas/laminas-composer-autoloading/level.svg)](https://shepherd.dev/github/laminas/laminas-composer-autoloading)
 
 > ## 🇷🇺 Русским гражданам
 >
@@ -19,8 +20,7 @@ laminas-composer-autoloading
 >
 > You trust us enough to use our software. We ask that you trust us to say the truth on this. We need your help. Go out and protest this unnecessary war. Stop the bloodshed. Say "stop the war!"
 
-Introduction
-------------
+## Introduction
 
 The `laminas-composer-autoloading` package provides the following commands for use with [laminas-cli](https://docs.laminas.dev/laminas-cli/):
 
@@ -34,8 +34,7 @@ Both commands also dump the autoloading rules on completion.
 > If you were using the v2 series of this component, the package previously provided its own binary, `laminas-composer-autoloading`.
 > You will now call `laminas composer:autoload:(disable|enable)` instead.
 
-Installation
-------------
+## Installation
 
 Run the following `composer` command:
 
@@ -45,8 +44,7 @@ $ composer require --dev "laminas/laminas-composer-autoloading"
 
 Note the `--dev` flag; this tool is intended for use in development only.
 
-Usage
------
+## Usage
 
 ```bash
 # Enable the module "Foo" and autodetermine if PSR-0 or PSR-4 autoloading should be generated
@@ -65,8 +63,7 @@ Use `laminas help <command>` to get detailed help about available options and ar
 - If unable to determine the autoloading type, the command raises an exception.
 - On enabling autoloading, if the `Module` class file for the module is in the module root, it will be moved to the module's `src/` directory (laminas-mvc applications only).
 
-Examples
---------
+## Examples
 
 1. Autodetect a module's autoloading type, and generate a Composer autoloading
    entry for "Status" module.

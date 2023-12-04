@@ -19,7 +19,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "7.4.99"
+            "php": "8.1.99"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
@@ -32,7 +32,7 @@
         }
     },
     "require": {
-        "php": "^7.4 || ~8.0.0 || ~8.1.0 || ~8.2.0",
+        "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
         "ext-json": "*",
         "laminas/laminas-cli": "^1.4.0",
         "webmozart/assert": "^1.10"
@@ -42,7 +42,7 @@
         "mikey179/vfsstream": "^1.6.11",
         "phpunit/phpunit": "^9.5.27",
         "psalm/plugin-phpunit": "^0.18.4",
-        "vimeo/psalm": "^5.4"
+        "vimeo/psalm": "^5.16"
     },
     "autoload": {
         "psr-4": {
@@ -61,6 +61,7 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
+        "static-analysis": "psalm --shepherd --stats",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     }
